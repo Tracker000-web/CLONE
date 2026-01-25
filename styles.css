@@ -1,0 +1,564 @@
+* { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+body {
+    margin: 0;
+    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #38574d; 
+    /* This is how you properly disable the image so the color shows: */
+    /* background-image: url('background.jpg'); */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    transition: background-image 0.5s ease-in-out, color 0.3s; /* Smooth transition when changing */
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Darkens the image for readability */
+    z-index: 0;
+}
+
+.login-container, .content, .side-menu {
+    position: relative;
+    z-index: 10; 
+}
+
+.login-container, #signup-section {
+  background-color: #cccccc; /* The grey background seen in your screenshot */
+  padding: 40px;
+  border-radius: 15px;
+  width: 100%;
+  max-width: 380px;
+  margin: 50px auto;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-container {
+  min-height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+
+  position: relative;
+  z-index: 3000;
+}
+
+#signup-section {
+  display: none;
+}
+
+.signup-text {
+  margin-top: 25px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: #888; /* Dimmed text for the question */
+  text-align: center;
+}
+
+.signup-text a {
+  color: #5da9e9; /* Light blue accent color */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.signup-text a:hover {
+  color: #357abd; /* Darker blue on hover */
+  text-decoration: underline;
+}
+
+
+h2 { margin-bottom: 0.5rem; color: #1a1a1a; }
+p { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+.input-group {
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+
+.label-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+label { font-weight: 600; font-size: 0.85rem; color: #333; }
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+#togglePassword {
+  position: absolute;
+  right: 15px; /* Distance from the right edge */
+  top: 50%;
+  transform: translateY(-50%); /* Centers it vertically */
+  cursor: pointer;
+  color: #666;
+  font-size: 22px;
+  z-index: 999; /* Ensures it stays on top of the input */
+  display: block !important;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding: 12px;
+  padding-right: 40px; /* Important: prevents text from overlapping the eye */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.input-group i { 
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888888; 
+  font-size: 20px;
+  z-index: 10;
+}
+
+/* Styling the "Remember Me" row */
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -15px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center; /* Aligns checkbox and text perfectly */
+  gap: 5px; /* Space between checkbox and the word 'Remember' */
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.remember-me input {
+  margin: 0; /* Removes default browser margins */
+  cursor: pointer;
+}
+
+.forgot-link {
+  font-size: 14px;
+  color: #3b82f6; 
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap; 
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-button:hover { background-color: #333; }
+
+.forgot-link, .signup-text a {
+  color: #4A90E2;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.signup-text { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; }
+
+/* Dark background overlay */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); 
+    display: none; /* Changed via JS to 'flex' */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* This ensures it sits on TOP of your login box */
+}
+
+/* The actual box */
+.modal-content {
+    background: #2a2a2a; /* Dark theme to match your app */
+    padding: 25px;
+    border-radius: 12px;
+    width: 350px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.modal-content h3 { margin-top: 0; color: #fff; }
+
+.modal-content input {
+    width: 90%;
+    padding: 10px;
+    margin: 15px 0;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background: #1a1a1a;
+    color: white;
+}
+
+.modal-buttons { display: flex; justify-content: space-around; }
+
+.modal-buttons button {
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+}
+
+#modal-cancel { background: #444; color: white; }
+
+#modal-ok { background: #ff4d94; color: white; } /* Matches your pink prompt theme */
+
+.modal-content {
+    background: #2a2a2a;
+    padding: 25px;
+    border-radius: 12px;
+    width: 350px;
+    text-align: center;
+    color: white;
+    
+    /* Animation settings */
+    transform: scale(0.7);
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+}
+
+/* When the parent is flex, animate the child */
+.custom-modal[style*="display: flex"] .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+
+/* Standardized Icon Buttons (Menu & Settings) */
+#menuBtn, #settingsBtn {
+  background: none;
+  border: none;
+  padding: 8px; /* Balanced padding for the SVG */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit; /* Icons match theme text color */
+  outline: none;
+  transition: all 0.2s ease;
+  width: 45px;  /* Exactly the same size */
+  height: 45px;
+}
+
+/* Ensure SVGs inside buttons scale correctly */
+#menuBtn svg, #settingsBtn svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor; /* Matches theme color automatically */
+}
+
+/* Positioning for the Top Menu Button */
+#menuBtn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1001;
+}
+
+/* Hover effect for both icons */
+#menuBtn:hover, #settingsBtn:hover {
+  background-color: rgba(155, 155, 155, 0.15);
+  border-radius: 8px;
+}
+
+/* Side menu Layout */
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 250px;
+  height: 100%;
+  background: #1e1e2f;
+  color: white;
+  padding: 20px;
+  transition: all 0.3s ease;
+  z-index: 1100;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+#addManagerBtn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  background: #4a4a6a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+#addManagerBtn:hover {
+  background: #5a5a8a;
+}
+
+#managerList {
+  flex-grow: 1; 
+  overflow-y: auto;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  min-height: 200px;
+}
+
+.manager-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03); /* Subtle background */
+  margin-bottom: 4px;
+  border-radius: 4px;
+}
+
+.manager-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.manager-item span {
+  color: #ffffff; /* Explicitly set text color to white */
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The footer section for settings */
+.bottom-section {
+  margin-top: auto;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 10px;
+}
+
+.side-menu.right { left: auto; right: -280px; }
+.side-menu.open { left: 0; }
+.side-menu.open.right { right: 0; }
+
+/* Overlay */
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+  z-index: 1000;
+}
+
+#overlay.active { opacity: 1; pointer-events: all; }
+
+.action-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 5px;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.action-btn:hover {
+  color: white;
+}
+
+.action-btn.delete:hover {
+  color: #ff4d4d; /* Red for delete */
+}
+
+/* Table Styling */
+.content { padding: 80px 40px; }
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  background: white;
+  color: #333;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* --- ADD THE NEW CODE HERE --- */
+
+th {
+    position: relative; 
+    min-width: 80px;
+    user-select: none; /* Prevents text highlighting while dragging */
+}
+
+.resizer {
+    width: 10px;        /* Area the mouse can grab */
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: col-resize;
+    z-index: 10;
+}
+
+/* Visual feedback when hovering or dragging */
+.resizer:hover, .resizing {
+    border-right: 3px solid #4a90e2;
+}
+
+
+
+th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+th { background: #f8f9fa; font-weight: bold; }
+
+/* Theme Overrides */
+body.theme-dark { background-color: #121212; color: #eee; }
+body.theme-dark table { background-color: #1e1e1e; color: #eee; }
+body.theme-dark th { background-color: #333; border-color: #444; }
+
+body.theme-light { background-color: #ffffff; color: #212529; }
+body.theme-light table { background-color: #ffffff; color: #333; }
+body.theme-light th { background-color: #f8f9fa; border-color: #dee2e6; }
+
+body.theme-pink { background-color: #fff0f6; color: #d63384; }
+body.theme-blue { background-color: #e7f5ff; color: #1971c2; }
+body.theme-green { background-color: #ebfbee; color: #2b8a3e; }
+body.theme-reader { background-color: #fdf6e3; color: #586e75; font-family: serif; }
+
+/* Settings Panel Appearance */
+.settings-panel { 
+  display: none; 
+  padding: 10px; 
+  background: rgba(255,255,255,0.05); 
+  border-radius: 8px;
+  margin-top: 5px;
+}
+.theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* The Background Overlay (Dims the rest of the screen) */
+/* The Background Overlay */
+#settingsOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 2000; /* Lower layer */
+}
+
+/* The Pop-out Panel */
+#settingsPanel {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    background-color: #1e1e2f;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 2001; /* HIGHER layer - This makes it clickable */
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+}
+
+#installBtn {
+    position: relative; /* Ensures it stays in the flow of the modal */
+    z-index: 2000; /* Ensures it is on top of everything inside the modal */
+    cursor: pointer !important; /* Forces the pointer icon to appear */
+}
+
+#settingsPanel h3 {
+    margin-top: 0;
+    color: white;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+
+/* UI Helpers */
+#managerSearch {
+  width: 100%;
+  padding: 8px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  border-radius: 4px;
+}
+
+/* Hide admin features by default */
+.admin-only {
+    display: none !important;
+}
+
+/* Optional: Style to show the sync status */
+.sync-indicator {
+    font-size: 12px;
+    margin-left: 10px;
+    color: #4CAF50;
+}
