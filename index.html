@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Manager Dashboard</title>
+  <title>Tracker</title>
 
   <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='3' width='7' height='7' fill='white'></rect><rect x='14' y='3' width='7' height='7' fill='white'></rect><rect x='14' y='14' width='7' height='7' fill='white'></rect><rect x='3' y='14' width='7' height='7' fill='white'></rect></svg>">
-  
   <link rel="stylesheet" href="styles.css">
-
   <link rel="manifest" href="manifest.json">
   <script>
     if ('serviceWorker' in navigator) {
@@ -139,7 +137,11 @@
 <main class="content">
   <h2 id="sheetTitle">Welcome back!</h2>
   
-  <button id="addRowBtn" style="margin-bottom: 10px; padding: 8px 16px; cursor: pointer;">+ Add New Row</button>
+  <button id="addRowBtn"
+          style="margin-bottom: 10px;
+                  padding: 8px 16px;
+                  cursor: pointer;">+ Add New Row
+  </button>
   
   <div id="sheetContainer"></div>
 </main>

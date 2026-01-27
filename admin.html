@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracker</title>
+
+  <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='3' width='7' height='7' fill='white'></rect><rect x='14' y='3' width='7' height='7' fill='white'></rect><rect x='14' y='14' width='7' height='7' fill='white'></rect><rect x='3' y='14' width='7' height='7' fill='white'></rect></svg>">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<h1>Admin</h1>
+
+<nav>
+  <a href="index.html">Dashboard</a> |
+  <a href="admin.html">Admin Logs</a>
+</nav>
+
+
+<nav class="side-menu">
+  <h3>Managers</h3>
+  <button id="addManagerBtn">+ Add Manager</button>
+  <input type="text" id="managerSearch" placeholder="Search managers..." />
+  <div id="managerList"></div>
+</nav>
+
+<!-- Filters -->
+<div class="filters">
+  <label for="roleFilter">User Role:</label>
+  <select id="roleFilter">
+    <option value="">All</option>
+    <option value="admin">Admin</option>
+    <option value="user">User</option>
+  </select>
+
+  <label for="dispositionFilter">Disposition:</label>
+  <select id="dispositionFilter">
+    <option value="">All</option>
+    <option value="Completed">Completed</option>
+    <option value="Pending">Pending</option>
+    <option value="Failed">Failed</option>
+  </select>
+
+  <label for="phoneFilter">Phone Number:</label>
+  <input type="text" id="phoneFilter" placeholder="Search phone">
+
+  <button id="clearFilters">Clear Filters</button>
+</div>
+
+<main class="content">
+  <h2>System Control</h2>
+  <button id="addColBtn">Add Column</button>
+    <button id="addManagerBtn">Add Manager</button>
+    <button class="action-btn delete">✕</button>
+  <div id="sheetContainer"></div>
+</main>
+
+
+<!-- Table -->
+<table id="logsTable">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Role</th>
+      <th>Phone</th>
+      <th>Disposition</th>
+      <th>Edit History</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>
