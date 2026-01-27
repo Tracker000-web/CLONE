@@ -8,9 +8,7 @@ body {
     align-items: center;
     min-height: 100vh;
     background-color: #38574d; 
-    /* This is how you properly disable the image so the color shows: */
-    /* background-image: url('background.jpg'); */
-    background-size: cover;
+    background-image: url('https://img.freepik.com/free-photo/abstract-textured-backgound_12071624.jpg');
     background-position: center;
     background-attachment: fixed;
     transition: background-image 0.5s ease-in-out, color 0.3s; /* Smooth transition when changing */
@@ -101,7 +99,11 @@ p { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
   margin-bottom: 0.5rem;
 }
 
-label { font-weight: 600; font-size: 0.85rem; color: #333; }
+label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #333;
+}
 
 input {
   width: 100%;

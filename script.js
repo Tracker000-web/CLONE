@@ -1,14 +1,14 @@
 /* 1. ELEMENTS & DATA INITIALIZATION */
 document.body.style.backgroundImage = "none";
 
+/* ---------- GLOBAL STATE ---------- */
+
+let isLoggedIn = false;
+let currentUser = null; 
+let currentActiveManager = null;
+
 // UI Containers (Moved to top-level for global access)
 const loginSection = document.getElementById('login-section');
-const rememberMeCheckbox = document.getElementById('rememberMe');
-const forgotLink = document.querySelector('.forgot-link');
-const forgotModal = document.getElementById('forgot-modal');
-const modalCancel = document.getElementById('modal-cancel');
-const modalOk = document.getElementById('modal-ok');
-const resetEmailInput = document.getElementById('reset-email-input');
 const signupSection = document.getElementById('signup-section');
 const app = document.getElementById("app");
 
@@ -19,8 +19,15 @@ const toSignupLink = document.getElementById('to-signup');
 const toLoginLink = document.getElementById('to-login');
 
 // Form Inputs
-const passwordInput = document.querySelector('#password');
 const emailInput = document.getElementById('email');
+const passwordInput = document.querySelector('#password');
+const rememberMeCheckbox = document.getElementById('rememberMe');
+
+const forgotLink = document.querySelector('.forgot-link');
+const forgotModal = document.getElementById('forgot-modal');
+const modalCancel = document.getElementById('modal-cancel');
+const modalOk = document.getElementById('modal-ok');
+const resetEmailInput = document.getElementById('reset-email-input');
 
 // Sidebar & Settings
 const menuBtn = document.getElementById("menuBtn");
@@ -28,6 +35,7 @@ const sideMenu = document.getElementById("sideMenu");
 const overlay = document.getElementById("overlay");
 const settingsBtn = document.getElementById("settingsBtn");
 const settingsPanel = document.getElementById("settingsPanel");
+
 const managerList = document.getElementById("managerList");
 const managerSearch = document.getElementById("managerSearch");
 const addManagerBtn = document.getElementById("addManagerBtn");
@@ -37,15 +45,15 @@ const notifyToggle = document.getElementById("notifyToggle");
 
 const spreadsheetTemplate = ["Phone numbers", "Task", "Status", "Remarks"];
 
-let isLoggedIn = false;
-let currentUser = null; 
-let currentActiveManager = null;
 
 /* 2. BACKEND API FUNCTIONS */
 
 async function checkSession() {
     try {
-        const res = await fetch("http://127.0.0.1:5000/api/me");
+        const res = await fetch("http://127.0.0.1:5000/api/me", {
+            credentials: "include"
+        });
+
         if (!res.ok) throw new Error("Not logged in");
         currentUser = await res.json();
         
@@ -176,6 +184,8 @@ function loadSpreadsheet(manager) {
     table.appendChild(tbody);
     sheetContainer.appendChild(table);
 }
+
+
 
 function renderManagers(filter = "") {
     managerList.innerHTML = "";
