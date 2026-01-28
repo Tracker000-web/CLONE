@@ -33,4 +33,10 @@ app.post('/add-user', (req, res) => {
     });
 });
 
-app.listen(3000, () => console.log('Backend running on http://localhost:3000'));
+app.listen(5000, () => console.log('Backend running on http://localhost:5000'));
+
+
+
+roleFilter.addEventListener("change", filterLogs);
+dispositionFilter.addEventListener("change", filterLogs);
+phoneFilter.addEventListener("input", filterLogs);
