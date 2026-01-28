@@ -1,0 +1,160 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.filters {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background: #333;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* --- AUDIT LOGS SECTION STYLING --- */
+
+#audit-logs-section {
+    margin: 30px 20px;
+    padding: 20px;
+    background: var(--bg-secondary, rgba(255, 255, 255, 0.05));
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#audit-logs-section h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: var(--text-color, #fff);
+}
+
+/* Filter Bar Controls */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filter-bar select, 
+.filter-bar input, 
+.filter-bar button {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #1e1e1e;
+    color: #eee;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.filter-bar input:focus, 
+.filter-bar select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+#clearFilters {
+    background: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#clearFilters:hover {
+    background: #c82333;
+}
+
+/* The Logs Table */
+#logsTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+#logsTable thead {
+    background-color: #2c2c2c;
+}
+
+#logsTable th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    border-bottom: 2px solid #444;
+}
+
+#logsTable td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #333;
+    color: #ddd;
+    font-size: 0.9rem;
+}
+
+/* Row Hover Effect */
+#logsTable tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+    }
+    
+    #logsTable {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+/* Light Theme Overrides */
+body.theme-light #audit-logs-section {
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+body.theme-light #logsTable td, 
+body.theme-light #logsTable th {
+    color: #333;
+    border-color: #eee;
+}
+
+body.theme-light .filter-bar select, 
+body.theme-light .filter-bar input {
+    background: #f9f9f9;
+    color: #333;
+    border-color: #ccc;
+}

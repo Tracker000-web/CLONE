@@ -186,7 +186,6 @@ function loadSpreadsheet(manager) {
 }
 
 
-
 function renderManagers(filter = "") {
     managerList.innerHTML = "";
     managers.filter(m => m.name.toLowerCase().includes(filter.toLowerCase())).forEach(m => {
@@ -198,7 +197,23 @@ function renderManagers(filter = "") {
     });
 }
 
-/* 5. INITIALIZATION & EVENTS */
+// Add a safety check for the global currentUser
+function postLog(actionDisposition, actionDescription) {
+  if (!currentUser) return console.warn("No user logged in to record activity.");
+
+  fetch("/api/logs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      user: currentUser.username || currentUser.name, // Support both naming conventions
+      role: currentUser.role,
+      phone: currentUser.phone || "N/A",
+      disposition: actionDisposition,
+      history: actionDescription,
+      timestamp: new Date().toISOString()
+    })
+  }).catch(err => console.error("Logging failed:", err));
+}
 
 /* 5. INITIALIZATION & EVENTS */
 
