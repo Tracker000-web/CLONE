@@ -22,3 +22,23 @@ export const UI = {
         }, 3000);
     }
 };
+
+/* ---------- ui.js Addition ---------- */
+export const UI = {
+    // ... existing showToast ...
+
+    updateConnectionStatus(isOnline) {
+        const container = document.getElementById('connection-status');
+        const text = container.querySelector('.status-text');
+        
+        if (isOnline) {
+            container.classList.remove('offline');
+            container.classList.add('online');
+            text.textContent = "Online";
+        } else {
+            container.classList.remove('online');
+            container.classList.add('offline');
+            text.textContent = "Offline";
+        }
+    }
+};

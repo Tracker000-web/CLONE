@@ -1,85 +1,67 @@
-const CACHE_NAME = 'my-app-cache-v1';
-const ASSETS = [
-  './',
-  './index.html',
-  './styles.css',
-  './script.js',
-  './manifest.json'
+/* ---------- sw.js ---------- */
+const CACHE_NAME = 'manager-app-v2'; // Increment version to force update
+const ASSETS_TO_CACHE = [
+    './',
+    './index.html',
+    './styles.css',
+    './app.js',
+    './state.js',
+    './api.js',
+    './auth.js',
+    './spreadsheet.js',
+    './ui.js'
 ];
 
-// 1. Install - Caches the files and forces the new worker to take over
+// 1. Install - Caches the files
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); 
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('Caching assets');
-      return cache.addAll(ASSETS);
-    })
-  );
-});
-
-// 2. Activate - Cleans up old versions of the cache
-self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim()); 
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('Deleting old cache:', cache);
-            return caches.delete(cache);
-          }
+    self.skipWaiting(); 
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            console.log('Service Worker: Caching Assets');
+            // Fixed: Changed ASSETS to ASSETS_TO_CACHE
+            return cache.addAll(ASSETS_TO_CACHE);
         })
-      );
-    })
-  );
+    );
 });
 
+// 2. Activate - Cleanup old caches
+self.addEventListener('activate', (event) => {
+    event.waitUntil(self.clients.claim()); 
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cache) => {
+                    if (cache !== CACHE_NAME) {
+                        console.log('Service Worker: Deleting Old Cache', cache);
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        })
+    );
+});
+
+// 3. Fetch - Network First Strategy with Backend Bypass
 self.addEventListener('fetch', (event) => {
-    // BYPASS FOR BACKEND: If the URL has port 5000, don't use the cache!
-    if (event.request.url.includes(':5000')) {
+    // BYPASS FOR BACKEND: Don't cache API calls
+    if (event.request.url.includes(':5000') || event.request.url.includes('/api/')) {
         return; 
     }
 
-    // Your existing cache code below...
     event.respondWith(
-        fetch(event.request).catch(() => caches.match(event.request))
+        fetch(event.request)
+            .then((response) => {
+                // If network is successful, return the response
+                return response;
+            })
+            .catch(() => {
+                // If network fails (offline), look in cache
+                return caches.match(event.request).then((match) => {
+                    return match || new Response("Offline: Resource not available", {
+                        status: 503,
+                        headers: { 'Content-Type': 'text/plain' }
+                    });
+                });
+            })
     );
-});
-
-// 3. Fetch - This "Network First" strategy helps you see updates immediately
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        fetch(event.request).catch(() => {
-            // This is the safety net! 
-            // If the network fails, you MUST return a valid Response 
-            // or match it from the cache.
-            return caches.match(event.request) || new Response("Network error occurred", {
-                status: 408,
-                headers: { 'Content-Type': 'text/plain' }
-            });
-        })
-    );
-});
-
-self.addEventListener("fetch", event => {
-  if (!navigator.onLine) {
-    event.respondWith(
-      caches.match(event.request)
-    );
-  }
-
-});
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((name) => {
-          if (name !== CACHE_NAME) {
-            return caches.delete(name);
-          }
-        })
-      );
-    })
-  );
 });

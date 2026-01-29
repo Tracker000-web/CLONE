@@ -610,3 +610,39 @@ body.theme-reader { background-color: #fdf6e3; color: #586e75; font-family: seri
     transform: scale(0.9);
     transition: all 0.5s ease;
 }
+
+/* --- Connection Status Styles --- */
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #95a5a6; /* Default Gray */
+    transition: background 0.3s ease;
+}
+
+.online .status-dot {
+    background: #2ecc71;
+    box-shadow: 0 0 8px #2ecc71;
+    animation: pulse 2s infinite;
+}
+
+.offline .status-dot {
+    background: #e74c3c;
+    box-shadow: 0 0 8px #e74c3c;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
