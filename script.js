@@ -234,6 +234,53 @@ function postLog(actionDisposition, actionDescription) {
   }).catch(err => console.error("Logging failed:", err));
 }
 
+// 1. Function to create the pin button
+function createPinButton(trackerId) {
+    const btn = document.createElement('button');
+    btn.innerHTML = '★'; // Star icon
+    btn.className = 'pin-btn';
+    
+    // Check if it's already favorited in localStorage
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    if (favorites.includes(trackerId)) {
+        btn.classList.add('active');
+    }
+
+    btn.onclick = () => toggleFavorite(trackerId, btn);
+    return btn;
+}
+
+// 2. Function to save/remove from favorites
+function toggleFavorite(trackerId, btn) {
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+    if (favorites.includes(trackerId)) {
+        // Remove from favorites
+        favorites = favorites.filter(id => id !== trackerId);
+        btn.classList.remove('active');
+    } else {
+        // Add to favorites
+        favorites.push(trackerId);
+        btn.classList.add('active');
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    renderFavoritesMenu(); // Refresh the side menu
+}
+
+function applyPermissions(role) {
+    const adminElements = document.querySelectorAll('.admin-only');
+    const userElements = document.querySelectorAll('.pin-btn');
+
+    if (role === 'admin') {
+        adminElements.forEach(el => el.style.display = 'block');
+        userElements.forEach(el => el.style.display = 'none');
+    } else {
+        adminElements.forEach(el => el.style.display = 'none');
+        userElements.forEach(el => el.style.display = 'block');
+    }
+}
+
 /* 5. INITIALIZATION & EVENTS */
 
 document.addEventListener("DOMContentLoaded", () => {
