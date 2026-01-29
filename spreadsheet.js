@@ -85,3 +85,38 @@ export const Spreadsheet = {
         return label;
     }
 };
+
+/* ---------- spreadsheet.js additions ---------- */
+export const Spreadsheet = {
+    // ... your existing functions ...
+
+    downloadCSV() {
+        if (!State.currentActiveManager) return;
+        
+        const manager = State.currentActiveManager;
+        // 1. Define Headers
+        const headers = ["Phone numbers", "Task", "Status", "Remarks"];
+        
+        // 2. Combine headers and rows into a single string
+        const csvContent = [
+            headers.join(","), 
+            ...manager.rows.map(row => row.join(","))
+        ].join("\n");
+
+        // 3. Create a "hidden" download link
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        
+        link.setAttribute("href", url);
+        link.setAttribute("download", `${manager.name}_export.csv`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Use your new Toast system!
+        import('./ui.js').then(m => m.UI.showToast("CSV Exported!", "success"));
+    }
+};

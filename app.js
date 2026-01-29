@@ -74,3 +74,9 @@ function updateUIForRole() {
 function applyTheme(theme) {
     document.body.className = `theme-${theme}`;
 }
+
+/* ---------- app.js addition ---------- */
+const exportBtn = document.getElementById("exportBtn");
+if (exportBtn) {
+    exportBtn.onclick = () => Spreadsheet.downloadCSV();
+}
