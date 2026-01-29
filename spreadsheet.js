@@ -1,6 +1,7 @@
 /* ---------- spreadsheet.js ---------- */
 import { State } from './state.js';
 import { API } from './api.js';
+import { UI } from './ui.js';
 
 export const Spreadsheet = {
     renderManagers(filter = "") {
@@ -36,12 +37,13 @@ export const Spreadsheet = {
         // Build Table Header
         const thead = document.createElement("thead");
         const headerRow = document.createElement("tr");
-        const colCount = manager.rows[0]?.length || 4;
-        for (let i = 0; i < colCount; i++) {
+        const headers = ["Phone numbers", "Task", "Status", "Remarks"];
+        
+        headers.forEach(text => {
             const th = document.createElement("th");
-            th.textContent = this.getColumnLabel(i);
+            th.textContent = text;
             headerRow.appendChild(th);
-        }
+        });
         thead.appendChild(headerRow);
         table.appendChild(thead);
 
@@ -54,18 +56,22 @@ export const Spreadsheet = {
                 td.textContent = cellValue;
                 td.contentEditable = isAdmin;
 
-                td.onblur = () => {
+                td.onblur = async () => {
                     if (td.textContent !== row[colIndex]) {
+                        const oldValue = row[colIndex];
                         row[colIndex] = td.textContent;
                         State.saveToLocal();
+
                         if (isAdmin) {
-                            API.saveCell(manager.id, rowIndex, colIndex, td.textContent, State.currentUser.role);
+                            try {
+                                await API.saveCell(manager.id, rowIndex, colIndex, td.textContent, State.currentUser.role);
+                                UI.showToast("Cell synced to cloud", "success");
+                            } catch (err) {
+                                // Handled by API module's internal queueing, 
+                                // but we notify the user here.
+                                UI.showToast("Offline: Saved locally", "info");
+                            }
                         }
-                    }
-                    if (isAdmin) {
-                        API.saveCell(manager.id, rowIndex, colIndex, td.textContent, State.currentUser.role)
-                        .then(() => UI.showToast("Cell synced to cloud", "success"))
-                          .catch(() => UI.showToast("Sync failed - saved locally", "info"));
                     }
                 };
                 tr.appendChild(td);
@@ -76,34 +82,17 @@ export const Spreadsheet = {
         container.appendChild(table);
     },
 
-    getColumnLabel(index) {
-        let label = "";
-        while (index >= 0) {
-            label = String.fromCharCode((index % 26) + 65) + label;
-            index = Math.floor(index / 26) - 1;
-        }
-        return label;
-    }
-};
-
-/* ---------- spreadsheet.js additions ---------- */
-export const Spreadsheet = {
-    // ... your existing functions ...
-
     downloadCSV() {
         if (!State.currentActiveManager) return;
         
         const manager = State.currentActiveManager;
-        // 1. Define Headers
         const headers = ["Phone numbers", "Task", "Status", "Remarks"];
         
-        // 2. Combine headers and rows into a single string
         const csvContent = [
             headers.join(","), 
-            ...manager.rows.map(row => row.join(","))
+            ...manager.rows.map(row => row.map(cell => `"${cell}"`).join(","))
         ].join("\n");
 
-        // 3. Create a "hidden" download link
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
@@ -116,7 +105,6 @@ export const Spreadsheet = {
         link.click();
         document.body.removeChild(link);
         
-        // Use your new Toast system!
-        import('./ui.js').then(m => m.UI.showToast("CSV Exported!", "success"));
+        UI.showToast("CSV Exported!", "success");
     }
 };

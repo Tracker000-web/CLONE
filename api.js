@@ -3,12 +3,19 @@ import { State } from './state.js';
 import { UI } from './ui.js';
 
 const BASE_URL = "http://127.0.0.1:5000";
+const DEFAULT_AVATAR = "https://ui-avatars.com/api/?background=random&name=";
 
 export const API = {
     async checkSession() {
         const res = await fetch(`${BASE_URL}/api/me`, { credentials: "include" });
         if (!res.ok) throw new Error("Not logged in");
-        return await res.json();
+        
+        const data = await res.json();
+        // If no profile pic exists, generate a default based on name
+        if (!data.profilePic) {
+            data.profilePic = `${DEFAULT_AVATAR}${encodeURIComponent(data.username || 'User')}`;
+        }
+        return data;
     },
 
     async addUser(userData) {
@@ -20,19 +27,19 @@ export const API = {
     },
 
     async updateProfile(profileData) {
-        return await fetch(`${BASE_URL}/api/update-profile`, {
+        const res = await fetch(`${BASE_URL}/api/update-profile`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'X-Role': State.currentUser.role 
+                'X-Role': State.currentUser?.role || 'team'
             },
             body: JSON.stringify(profileData)
         });
-    }
+        if (!res.ok) throw new Error("Failed to update profile");
+        return await res.json();
+    },
 
-    // Consolidating your logic into one saveCell function
     async saveCell(managerId, row, col, value, role, isSyncing = false) {
-        // Handle Offline State
         if (!navigator.onLine && !isSyncing) {
             State.addToSyncQueue({ managerId, row, col, value, role });
             UI.showToast("Offline: Change queued for sync", "info");
@@ -50,53 +57,31 @@ export const API = {
             });
 
             if (!res.ok) throw new Error("Server rejected save");
-            
             if (!isSyncing) UI.showToast("Saved to cloud", "success");
         } catch (err) {
             if (!isSyncing) {
                 State.addToSyncQueue({ managerId, row, col, value, role });
                 UI.showToast("Server error: Queued for later", "error");
             }
-            throw err; // Re-throw so processSyncQueue knows to stop
+            throw err;
         }
     },
 
     async processSyncQueue() {
         if (State.syncQueue.length === 0 || !navigator.onLine) return;
 
-        // Create a copy to iterate through
         const queue = [...State.syncQueue];
-        
         for (const item of queue) {
             try {
                 await this.saveCell(item.managerId, item.row, item.col, item.value, item.role, true);
-                // If successful, remove from the actual state
                 State.syncQueue = State.syncQueue.filter(q => q.id !== item.id);
             } catch (err) {
-                console.warn("Batch sync interrupted:", err);
+                console.warn("Sync interrupted:", err);
                 break; 
             }
         }
         
         State.saveToLocal();
-        if (State.syncQueue.length === 0) {
-            UI.showToast("All changes synced!", "success");
-        }
-    },
-
-    async forgotPassword(email) {
-        return await fetch(`${BASE_URL}/api/forgot-password`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-        });
+        if (State.syncQueue.length === 0) UI.showToast("All changes synced!", "success");
     }
 };
-
-async updateProfile(profileData) {
-    return await fetch(`${BASE_URL}/api/update-profile`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profileData)
-    });
-}

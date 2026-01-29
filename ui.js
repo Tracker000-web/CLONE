@@ -1,7 +1,7 @@
 /* ---------- ui.js ---------- */
 export const UI = {
+    // 1. Toast Notification System
     showToast(message, type = 'info') {
-        // Create toast container if it doesn't exist
         let container = document.getElementById('toast-container');
         if (!container) {
             container = document.createElement('div');
@@ -15,42 +15,40 @@ export const UI = {
 
         container.appendChild(toast);
 
-        // Animate out and remove after 3 seconds
         setTimeout(() => {
             toast.classList.add('fade-out');
             toast.ontransitionend = () => toast.remove();
         }, 3000);
-    }
-};
+    },
 
-/* ---------- ui.js Addition ---------- */
-export const UI = {
-    // ... existing showToast ...
-
+    // 2. Network Status Indicator
     updateConnectionStatus(isOnline) {
         const container = document.getElementById('connection-status');
+        if (!container) return; // Guard clause if element doesn't exist yet
+        
         const text = container.querySelector('.status-text');
         
         if (isOnline) {
-            container.classList.remove('offline');
-            container.classList.add('online');
+            container.classList.replace('offline', 'online') || container.classList.add('online');
             text.textContent = "Online";
         } else {
-            container.classList.remove('online');
-            container.classList.add('offline');
+            container.classList.replace('online', 'offline') || container.classList.add('offline');
             text.textContent = "Offline";
         }
-    }
-};
+    },
 
-/* ---------- ui.js addition ---------- */
-export const UI = {
-    // ... existing methods ...
-
+    // 3. Image Processing (Base64)
     async handleImageUpload(file) {
+        // Validation: Limit to 2MB to keep MySQL LONGTEXT performance snappy
+        const MAX_SIZE = 2 * 1024 * 1024; 
+        if (file.size > MAX_SIZE) {
+            this.showToast("File too large! Max 2MB allowed.", "error");
+            throw new Error("File size limit exceeded");
+        }
+
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = () => resolve(reader.result); // This is the Base64 string
+            reader.onload = () => resolve(reader.result); 
             reader.onerror = (err) => reject(err);
             reader.readAsDataURL(file);
         });
