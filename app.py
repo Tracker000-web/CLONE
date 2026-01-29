@@ -7,11 +7,20 @@ CORS(app)
 
 @app.route("/api/me")
 def me():
-    # TEMP: replace with real auth later
+    # Once you implement real auth, you'll get the user ID from the session
+    # For now, we'll fetch the first user as a placeholder
+    user = User.query.get(1) 
+    
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
     return jsonify({
-        "user_id": 1,
-        "name": "Admin",
-        "role": "admin"
+        "user_id": user.id,
+        "username": user.username, # Use 'username' or 'name' based on your model
+        "email": user.email,
+        "role": user.role,
+        "phone": getattr(user, 'phone', "N/A"),
+        "profilePic": getattr(user, 'profile_pic', None) # Base64 string from DB
     })
 
 @app.route("/api/save-cell", methods=["POST"])
@@ -124,6 +133,35 @@ def save_cell():
     db.session.commit()
     return jsonify({"status": "success"})
 
+@app.route('/api/update-profile', methods=['POST'])
+def update_profile():
+    # In a real app, use session.get('user_id')
+    user_id = 1 
+    user = User.query.get(user_id)
+    
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    data = request.json
+    
+    # Update fields if they are provided in the request
+    if 'name' in data:
+        user.username = data['name']
+    if 'phone' in data:
+        user.phone = data['phone']
+    if 'profilePic' in data:
+        # This stores the full Base64 string into your LONGTEXT column
+        user.profile_pic = data['profilePic']
+
+    try:
+        db.session.commit()
+        return jsonify({
+            "message": "Profile updated successfully!",
+            "profilePic": user.profile_pic
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True) 
