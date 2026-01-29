@@ -42,3 +42,17 @@ export const UI = {
         }
     }
 };
+
+/* ---------- ui.js addition ---------- */
+export const UI = {
+    // ... existing methods ...
+
+    async handleImageUpload(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result); // This is the Base64 string
+            reader.onerror = (err) => reject(err);
+            reader.readAsDataURL(file);
+        });
+    }
+};

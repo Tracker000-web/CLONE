@@ -103,3 +103,36 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.error('Service Worker: Failed', err));
     });
 }
+
+/* ---------- app.js addition ---------- */
+const saveProfileBtn = document.getElementById("saveProfileBtn");
+const profilePicInput = document.getElementById("profilePicInput");
+
+if (saveProfileBtn) {
+    saveProfileBtn.onclick = async () => {
+        const name = document.getElementById('profile-name').value;
+        const phone = document.getElementById('profile-phone').value;
+        const file = profilePicInput.files[0];
+
+        let profileData = { name, phone };
+
+        if (file) {
+            // Convert image to string before sending
+            const base64String = await UI.handleImageUpload(file);
+            profileData.profilePic = base64String;
+        }
+
+        try {
+            await API.updateProfile(profileData);
+            UI.showToast("Profile Updated!", "success");
+            
+            // Update local state so the UI reflects changes immediately
+            State.currentUser.name = name;
+            if (profileData.profilePic) {
+                document.getElementById('nav-profile-pic').src = profileData.profilePic;
+            }
+        } catch (err) {
+            UI.showToast("Update failed", "error");
+        }
+    };
+}

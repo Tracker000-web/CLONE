@@ -19,6 +19,17 @@ export const API = {
         });
     },
 
+    async updateProfile(profileData) {
+        return await fetch(`${BASE_URL}/api/update-profile`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-Role': State.currentUser.role 
+            },
+            body: JSON.stringify(profileData)
+        });
+    }
+
     // Consolidating your logic into one saveCell function
     async saveCell(managerId, row, col, value, role, isSyncing = false) {
         // Handle Offline State
