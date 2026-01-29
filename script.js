@@ -55,15 +55,16 @@ async function checkSession() {
         });
 
         if (!res.ok) throw new Error("Not logged in");
+        
         currentUser = await res.json();
         
-        if (currentUser && currentUser.role === "admin") {
-            document.querySelectorAll(".admin-only").forEach(el => {
-                el.style.setProperty('display', 'block', 'important');
-            });
-        }
+        // Use the new toggle function to handle all UI changes
+        updateUIForRole();
+        
     } catch (err) {
         console.warn("Backend offline or Session missing. Features restricted.");
+        currentUser = null; // Ensure currentUser is null if fetch fails
+        updateUIForRole();
     }
 }
 
@@ -126,6 +127,24 @@ function applySettings() {
     
     document.body.style.backgroundImage = "none";
     document.body.style.backgroundColor = (settings.theme === 'dark') ? "#121212" : "#f4f7f6";
+}
+
+function updateUIForRole() {
+    const isAdmin = currentUser && currentUser.role === 'admin';
+    
+    // 1. Handle visibility of admin-only buttons/sections
+    document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.setProperty('display', isAdmin ? 'block' : 'none', 'important');
+    });
+    
+    // 2. Handle spreadsheet editability
+    // This looks for all table cells in the spreadsheet container
+    const cells = document.querySelectorAll('#sheetContainer td');
+    cells.forEach(cell => {
+        cell.contentEditable = isAdmin;
+    });
+
+    console.log(`UI Updated: Role is ${isAdmin ? 'Admin' : 'User'}`);
 }
 
 /* 4. SPREADSHEET LOGIC */
@@ -256,6 +275,24 @@ document.addEventListener("DOMContentLoaded", () => {
         rememberMeCheckbox.checked = true;
     }
 });
+
+
+function logout() {
+    // 1. Clear local state
+    currentUser = null;
+    isLoggedIn = false;
+    
+    // 2. Reset UI
+    app.style.display = "none";
+    loginSection.style.display = "block";
+    
+    // 3. Re-run UI toggle to hide admin buttons and lock cells
+    updateUIForRole();
+    
+    // 4. Optional: Clear session on backend (if you use cookies)
+    fetch("http://127.0.0.1:5000/api/logout", { method: "POST" })
+        .catch(err => console.log("Logged out locally."));
+}
 
 // --- AUTH SUBMISSIONS ---
 
