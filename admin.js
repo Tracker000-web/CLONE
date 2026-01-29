@@ -1,6 +1,6 @@
 import { requireAdmin, getUser } from "./auth.js";
 requireAdmin(); // Block non-admins
-let logs = []; // Global store for audit logs
+// Global store for audit logs
 // Simulate logs from backend
 let logs = [
   { user: "John Doe", role: "user", phone: "09123456789", disposition: "Completed", history: "Submitted form", timestamp: "2026-01-27 10:00" },
