@@ -363,11 +363,14 @@ if (loginForm) {
 }
 
 // --- FORGOT PASSWORD MODAL LOGIC ---
-forgotLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    console.log("Modal should show now");
-    forgotModal.style.setProperty('display', 'flex', 'important');
-});
+if (forgotLink && forgotModal) {
+    forgotLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log("Modal should show now");
+        forgotModal.style.setProperty('display', 'flex', 'important');
+    });
+}
+
 
 if (modalOk) {
     modalOk.onclick = async () => {
