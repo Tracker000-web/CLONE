@@ -434,6 +434,46 @@ input:focus {
   color: #ff4d4d; /* Red for delete */
 }
 
+.main-content {
+    flex: 1;
+    background: #f4f4f4;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+/* Matching your sketch's "NAME" buttons */
+.manager-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.mgr-btn {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    border: 2px solid #555;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* Table styling for the Spreadsheet view */
+#metricsTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+#metricsTable th, #metricsTable td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+
+
 /* Table Styling */
 .content { padding: 80px 40px; }
 table {

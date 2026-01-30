@@ -51,4 +51,37 @@ app.post('/api/logs', (req, res) => {
   });
 });
 
+/**
+ * SERVER-SIDE AUTH & ROUTES
+ * Move these to your main server file (e.g., server.js)
+ */
+
+// Middleware: Strict Admin Check
+function isAdmin(req, res, next) {
+    if (!req.user || req.user.role !== "admin") {
+        return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+    next();
+}
+
+// Route: Get Audit Logs
+app.get("/api/logs", isAdmin, async (req, res) => {
+    try {
+        const [rows] = await db.query("SELECT * FROM audit_logs ORDER BY timestamp DESC");
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "Database error fetching logs" });
+    }
+});
+
+// Route: Delete User
+app.delete("/api/users/:id", isAdmin, async (req, res) => {
+    try {
+        await db.query("DELETE FROM users WHERE id = ?", [req.params.id]);
+        res.json({ message: "User deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to delete user" });
+    }
+});
+
 app.listen(5000, () => console.log('Backend running on http://localhost:5000'));

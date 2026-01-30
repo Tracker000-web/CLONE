@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 1. SESSION & NETWORK INITIALIZATION
     UI.updateConnectionStatus(navigator.onLine);
     
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'index.html';
+        return;
+    }
+
     try {
         State.currentUser = await API.checkSession();
         State.isLoggedIn = true;
@@ -27,6 +32,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (lastManager) Spreadsheet.loadSpreadsheet(lastManager);
 
     // 3. EVENT LISTENERS: AUTH & FORMS
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'index.html';
+    }
+
+
+
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.onsubmit = (e) => {
@@ -39,6 +50,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 4. EVENT LISTENERS: UI & NAVIGATION
+
+ 
     document.getElementById("menuBtn").onclick = () => {
         document.getElementById("sideMenu").classList.add("open");
         document.getElementById("overlay").classList.add("active");
@@ -52,6 +65,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("managerSearch").oninput = (e) => {
         Spreadsheet.renderManagers(e.target.value);
     };
+    document.getElementById("settingsBtn").onclick = () => {
+        UI.openSettingsModal();
+    };
+
+    document.getElementById("logoutBtn").onclick = () => {
+        Auth.logout();
+    };
+       document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('isLoggedIn');
+        window.location.href = 'index.html';
+    });
 
     // 5. DATA & ADMIN ACTIONS
     const addRowBtn = document.getElementById("addRowBtn");
@@ -136,3 +160,4 @@ if (saveProfileBtn) {
         }
     };
 }
+

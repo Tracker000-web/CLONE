@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tracker CRM</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark">
+  <div id="app">
+    <div class="crm-container">
+      <aside id="sideMenu" class="side-menu">
+        <div class="sidebar-header">
+          <button id="menuBtn">☰</button>
+          <h2>MANAGERS</h2>
+        </div>
+        <div class="search-box">
+          <input type="text" id="managerSearch" placeholder="SEARCH managers...">
+        </div>
+        <div id="favoritesList" class="favorites-section">
+          <h4>⭐ FAVORITES</h4>
+          <div id="favContainer"></div>
+        </div>
+        <hr class="nav-divider">
+        <div id="managerList" class="manager-buttons"></div>
+        <div class="sidebar-footer">
+          <button id="settingsBtn">⚙ SETTINGS</button>
+          <button id="logoutBtn" class="logout-btn">Logout</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="content-header">
+          <div class="title-area">
+            <h1 id="activeManager">Welcome back!</h1>
+            <p class="subtitle">METRICS</p>
+          </div>
+          <button id="appointmentBtn" class="appointment-btn">APPOINTMENT</button>
+        </header>
+        <div class="table-controls">
+          <button id="addRowBtn">+ ADD ROW</button>
+          <button id="addColBtn" class="admin-only">ADD COLUMN</button>
+        </div>
+        <div id="sheetContainer" class="spreadsheet-view">
+          <table id="metricsTable">
+            <thead>
+              <tr>
+                <th width="50">#</th>
+                <th>PHONE NUMBERS</th>
+                <th>DISPOSITION</th>
+                <th>COMMENTS</th>
+              </tr>
+            </thead>
+            <tbody id="metricsBody"></tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="spreadsheet.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

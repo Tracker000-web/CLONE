@@ -1,30 +1,42 @@
+/**
+ * ADMIN.JS - Frontend Logic
+ * Responsible for Audit Logs, User Management, and Admin UI
+ */
+
 import { requireAdmin, getUser } from "./auth.js";
 
-requireAdmin(); // Block non-admins
-const currentUser = getUser(); // Get the logged-in user
+// --- 1. SECURITY INITIALIZATION ---
+// Immediately kick out non-admins before anything else loads
+requireAdmin(); 
+const currentUser = getUser();
 
-// 1. Initialize logs with dummy data (ONLY DECLARE ONCE)
-let logs = [
-  { user: "John Doe", role: "user", phone: "09123456789", disposition: "Completed", history: "Submitted form", timestamp: "2026-01-27 10:00" },
-  { user: "Jane Admin", role: "admin", phone: "09234567890", disposition: "Pending", history: "Edited manager", timestamp: "2026-01-27 11:00" },
-  { user: "Alice", role: "user", phone: "09345678901", disposition: "Failed", history: "Attempted edit", timestamp: "2026-01-27 12:30" },
-  { user: "Bob", role: "user", phone: "09123456789", disposition: "Pending", history: "Created record", timestamp: "2026-01-27 13:15" },
-];
+// Global state for logs to allow filtering without re-fetching
+let logs = []; 
 
-// 2. Fetch logic
+// --- 2. DATA FETCHING ---
 async function fetchLogs() {
     try {
-        const res = await fetch("/api/logs");
+        const res = await fetch("/api/logs", {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+            }
+        });
+        
         if (!res.ok) throw new Error("Failed to fetch logs");
         logs = await res.json();
         renderLogs(logs);
     } catch (err) {
         console.error("Error loading logs:", err);
-        renderLogs(logs); // Fallback to dummy data if server is down
+        // Fallback dummy data for development/testing
+        logs = [
+            { user: "John Doe", role: "user", phone: "09123456789", disposition: "Completed", history: "Submitted form", timestamp: "2026-01-27 10:00" },
+            { user: "Jane Admin", role: "admin", phone: "09234567890", disposition: "Pending", history: "Edited manager", timestamp: "2026-01-27 11:00" }
+        ];
+        renderLogs(logs);
     }
 }
 
-// 3. Render logic
+// --- 3. UI RENDERING ---
 function renderLogs(logsToRender) {
     const tableBody = document.querySelector("#logsTable tbody");
     if (!tableBody) return; 
@@ -34,9 +46,9 @@ function renderLogs(logsToRender) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${log.user}</td>
-            <td>${log.role}</td>
+            <td><strong>${log.role.toUpperCase()}</strong></td>
             <td>${log.phone}</td>
-            <td>${log.disposition}</td>
+            <td><span class="status-badge status-${log.disposition.toLowerCase()}">${log.disposition}</span></td>
             <td>${log.history}</td>
             <td>${log.timestamp}</td>
         `;
@@ -44,17 +56,11 @@ function renderLogs(logsToRender) {
     });
 }
 
-// 4. Filter logic
+// --- 4. FILTERING & SEARCH ---
 function filterLogs() {
-    const roleEl = document.getElementById("roleFilter");
-    const dispEl = document.getElementById("dispositionFilter");
-    const phoneEl = document.getElementById("phoneFilter");
-
-    if (!roleEl || !dispEl || !phoneEl) return;
-
-    const role = roleEl.value.toLowerCase();
-    const disposition = dispEl.value.toLowerCase();
-    const phone = phoneEl.value.toLowerCase();
+    const role = document.getElementById("roleFilter")?.value.toLowerCase() || "";
+    const disposition = document.getElementById("dispositionFilter")?.value.toLowerCase() || "";
+    const phone = document.getElementById("phoneFilter")?.value.toLowerCase() || "";
 
     const filtered = logs.filter(log => {
         return (
@@ -66,25 +72,38 @@ function filterLogs() {
     renderLogs(filtered);
 }
 
-// 5. Initialize listeners
+// --- 5. EVENT LISTENERS & DOM READY ---
 document.addEventListener("DOMContentLoaded", () => {
+    // Initial data load
     fetchLogs();
 
-    const roleFilter = document.getElementById("roleFilter");
-    const dispositionFilter = document.getElementById("dispositionFilter");
-    const phoneFilter = document.getElementById("phoneFilter");
-    const clearFilters = document.getElementById("clearFilters");
+    // Setup Filter Listeners
+    const filters = ["roleFilter", "dispositionFilter", "phoneFilter"];
+    filters.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            const eventType = id === "phoneFilter" ? "input" : "change";
+            el.addEventListener(eventType, filterLogs);
+        }
+    });
 
-    if (roleFilter) roleFilter.addEventListener("change", filterLogs);
-    if (dispositionFilter) dispositionFilter.addEventListener("change", filterLogs);
-    if (phoneFilter) phoneFilter.addEventListener("input", filterLogs);
-    
-    if (clearFilters) {
-        clearFilters.addEventListener("click", () => {
-            roleFilter.value = "";
-            dispositionFilter.value = "";
-            phoneFilter.value = "";
+    // Clear Filters Button
+    const clearBtn = document.getElementById("clearFilters");
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            document.getElementById("roleFilter").value = "";
+            document.getElementById("dispositionFilter").value = "";
+            document.getElementById("phoneFilter").value = "";
             renderLogs(logs);
+        });
+    }
+
+    // Logout Functionality
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'index.html';
         });
     }
 });
