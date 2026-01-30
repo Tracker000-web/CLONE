@@ -3,6 +3,7 @@ import { checkAuth } from './auth.js';
 import { globalState } from './state.js';
 import { checkAuth, logout } from './auth.js';
 import { authenticatedFetch } from './api.js';
+import { initSidebar, loadSidebarState } from './ui.js';
 
 // UI Elements
 const sideMenu = document.getElementById("sideMenu");
@@ -84,6 +85,49 @@ document.querySelectorAll(".themeBtn").forEach(btn => {
         saveSettings();
     };
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadSidebarState(); // Set preferred state
+    initSidebar();      // Enable clicking
+});
+
+
+// dashboard.js
+import { authenticatedFetch } from './api.js';
+
+async function loadManagers() {
+    const managerContainer = document.getElementById('managerList');
+    
+    try {
+        // 1. Fetch the list from your app.py backend
+        const managers = await authenticatedFetch('/api/managers');
+        
+        // 2. Clear existing placeholder content
+        managerContainer.innerHTML = '';
+
+        // 3. Loop through and create a button for each manager
+        managers.forEach(manager => {
+            const btn = document.createElement('button');
+            btn.className = 'manager-item';
+            btn.innerHTML = `<span>${manager.name}</span>`;
+            
+            // Add click event to update the main content area
+            btn.onclick = () => {
+                document.getElementById('activeManager').textContent = manager.name;
+                // Add logic here to load specific metrics for this manager
+            };
+
+            managerContainer.appendChild(btn);
+        });
+    } catch (error) {
+        console.error("Error loading managers:", error);
+    }
+}
+
+// Call the function when the page loads
+document.addEventListener('DOMContentLoaded', loadManagers);
+
+
 
 // --- IGNORE ---
 

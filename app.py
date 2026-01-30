@@ -198,5 +198,17 @@ def update_profile():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/managers', methods=['GET'])
+@token_required # Using the decorator we created earlier
+def get_managers():
+    # In a real app, you would fetch this from your database
+    manager_list = [
+        {"id": 1, "name": "Manager A"},
+        {"id": 2, "name": "Manager B"},
+        {"id": 3, "name": "Manager C"}
+    ]
+    return jsonify(manager_list)
+
+
 if __name__ == '__main__':
     app.run(debug=True) 

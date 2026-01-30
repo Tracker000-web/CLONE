@@ -54,3 +54,26 @@ export const UI = {
         });
     }
 };
+
+export function initSidebar() {
+    const menuBtn = document.getElementById('menuBtn');
+    const sideMenu = document.getElementById('sideMenu');
+
+    if (menuBtn && sideMenu) {
+        menuBtn.addEventListener('click', () => {
+            sideMenu.classList.toggle('collapsed');
+            
+            # Optional: Change the icon or save preference to localStorage
+            const isCollapsed = sideMenu.classList.contains('collapsed');
+            localStorage.setItem('sidebarState', isCollapsed ? 'closed' : 'open');
+        });
+    }
+}
+
+// Check saved state on load
+export function loadSidebarState() {
+    const sideMenu = document.getElementById('sideMenu');
+    if (localStorage.getItem('sidebarState') === 'closed') {
+        sideMenu.classList.add('collapsed');
+    }
+}
