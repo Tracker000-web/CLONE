@@ -30,6 +30,16 @@ def token_required(f):
         return f(*args, **kwargs)
     return decorated
 
+@app.route('/api/stats', methods=['GET'])
+@token_required
+def get_stats():
+    # This code only runs if the token check passes
+    return jsonify({
+        'count': 1250,
+        'status': 'Active',
+        'server_time': '2026-01-31'
+    })
+
 @app.route("/api/me")
 def me():
     # Once you implement real auth, you'll get the user ID from the session
