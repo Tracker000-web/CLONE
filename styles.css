@@ -8,10 +8,13 @@ body {
     align-items: center;
     min-height: 100vh;
     background-color: #38574d; 
-    background-image: url('https://img.freepik.com/free-photo/abstract-textured-backgound_12071624.jpg');
+    /* Change the line below to match your downloaded filename */
+    background-image: url('4840719.jpg'); 
+    background-size: cover; /* Added this to ensure it fills the screen */
     background-position: center;
     background-attachment: fixed;
-    transition: background-image 0.5s ease-in-out, color 0.3s; /* Smooth transition when changing */
+    background-repeat: no-repeat; /* Prevents the image from tiling */
+    transition: background-image 0.5s ease-in-out, color 0.3s;
 }
 
 body::before {

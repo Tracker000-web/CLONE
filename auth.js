@@ -1,4 +1,3 @@
-/* ---------- auth.js ---------- */
 import { API } from './api.js';
 import { State } from './state.js';
 import { UI } from './ui.js';
@@ -7,6 +6,8 @@ import { UI } from './ui.js';
 const loginSection = document.getElementById('login-section');
 const signupSection = document.getElementById('signup-section');
 const appContainer = document.getElementById("app");
+const signupBtn = document.getElementById('show-signup');
+const loginForm = document.getElementById('login-form');
 
 export const Auth = {
     async handleLogin(email, password, rememberMe) {
@@ -29,12 +30,17 @@ export const Auth = {
                 }
 
             this.showApp();
-             } 
+            } 
         
         catch (err) {
             alert("Login failed. Check your credentials or server status.");
              }
+
             UI.showToast("Invalid credentials", "error");
+
+            if (signupBtn) {
+             signupBtn.addEventListener('click', () => toggleAuth('signup'));
+            }
     },
 
     async handleSignup(name, email, password) {
@@ -74,25 +80,35 @@ function toggleAuth(view) {
   document.getElementById('login-section').style.display = view === 'login' ? 'block' : 'none';
   document.getElementById('signup-section').style.display = view === 'signup' ? 'block' : 'none';
   document.getElementById('forgot-modal').style.display = view === 'forgot' ? 'flex' : 'none';
+  document.getElementById('login-form').style.display = view === 'forgot' ? 'none' : 'block';
 }
 
 // Example Login Success
-document.getElementById('login-form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  // Perform your validation here...
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // FOR TESTING: Set this to true to bypass validation
+        const loginSuccessful = true; 
 
-if (loginSuccessful) {
-   
-    localStorage.setItem('isLoggedIn', 'true');  // 1. Save the session so dashboard.html knows you are allowed in
-    localStorage.setItem('userRole', 'admin');   // or 'user' based on your data
-    window.location.href = 'dashboard.html';       // 2. REDIRECT to the new dashboard file
-} else {
-    alert("Invalid credentials");
-}});
+        if (loginSuccessful) {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userRole', 'admin');
+            window.location.href = 'dashboard.html'; // This triggers the redirect
+        } else {
+            alert("Invalid credentials");
+        }
+    });
+}
 
-document.getElementById('show-signup').addEventListener('click', () => toggleAuth('signup'));
-document.getElementById('show-login').addEventListener('click', () => toggleAuth('login'));
-document.getElementById('show-forgot').addEventListener('click', () => toggleAuth('forgot'));
-document.getElementById('close-forgot').addEventListener('click', () => toggleAuth('login'));
+const addSafeListener = (id, view) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('click', () => toggleAuth(view));
+};
+
+addSafeListener('show-signup', 'signup');
+addSafeListener('show-login', 'login');
+addSafeListener('show-forgot', 'forgot');
+addSafeListener('close-forgot', 'login');
 
 /* ---------- admin.js ---------- */
