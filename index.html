@@ -5,26 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tracker</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:,">
 </head>
 <body class="theme-dark">
 
   <div class="auth-wrapper">
+
+    
     <div id="login-section" class="login-container">
       <form id="login-form">
         <h2>Welcome Agent!</h2>
         <p>Please enter your details</p>
+
         <div class="input-group">
-          <input type="email" id="email" required placeholder="Email">
+          <input type="email" id="email" required placeholder="Email" autocomplete="username">
         </div>
         <div class="input-group">
-          <input type="password" id="password" required placeholder="Password">
+          <input type="password" id="reg-password-input" required placeholder="Password"autocomplete="current-password">
         </div>
+
         <div class="form-options">
           <label class="remember-me">
             <input type="checkbox" name="remember"> <span>Remember me</span>
           </label>
           <a href="javascript:void(0)" onclick="toggleAuth('forgot')" class="forgot-link">Forgot?</a>
         </div>
+
         <button type="submit" class="login-button">Sign In</button>
         <p class="signup-text">
           Don't have an account? <a href="javascript:void(0)" onclick="toggleAuth('signup')">Sign up for free</a>
@@ -32,19 +38,24 @@
       </form>
     </div>
 
+
     <div id="signup-section" class="login-container" style="display: none;">
       <form id="signup-form">
         <h2>Sign up</h2>
         <p>Create your account</p>
+
         <div class="input-group">
           <input type="text" id="reg-name-input" required placeholder="Full Name">
         </div>
+
         <div class="input-group">
-          <input type="email" id="reg-email-input" required placeholder="Email">
+          <input type="email" id="reg-email-input" required placeholder="Email" autocomplete="username">
         </div>
+
         <div class="input-group">
-          <input type="password" id="reg-password-input" required placeholder="Password">
+          <input type="password" id="reg-password-input" required placeholder="Password"autocomplete="current-password">
         </div>
+
         <button type="submit" class="login-button">Create Account</button>
         <p class="signup-text">
           Already have an account? <a href="javascript:void(0)" onclick="toggleAuth('login')">Sign In</a>

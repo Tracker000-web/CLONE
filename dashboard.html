@@ -3,8 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tracker CRM</title>
+  <title>Tracker</title>
   <link rel="stylesheet" href="styles.css">
+  <script>
+    // Check if the user is logged in
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+    if (isLoggedIn !== 'true') {
+        // If not logged in, redirect to index.html immediately
+        window.location.href = 'index.html';
+    }
+</script>
 </head>
 <body class="theme-dark">
   <div id="app">

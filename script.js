@@ -441,3 +441,9 @@ if (document.getElementById("addRowBtn")) {
         loadSpreadsheet(currentActiveManager);
     };
 }
+
+function handleLogout() {
+    localStorage.removeItem('isLoggedIn'); // Clear the session
+    localStorage.removeItem('userRole');    // Clear the role
+    window.location.href = 'index.html';    // Go back to login
+}
