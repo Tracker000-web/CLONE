@@ -4,7 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tracker</title>
+
+   <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='3' width='7' height='7' fill='white'></rect><rect x='14' y='3' width='7' height='7' fill='white'></rect><rect x='14' y='14' width='7' height='7' fill='white'></rect><rect x='3' y='14' width='7' height='7' fill='white'></rect></svg>">
+
   <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="dashboard.css">
   <script>
     // Check if the user is logged in
     const isLoggedIn = localStorage.getItem('isLoggedIn');
@@ -18,23 +23,31 @@
 <body class="theme-dark">
   <div id="app">
     <div class="crm-container">
+
+      <!-- Sidebar -->
       <aside id="sideMenu" class="side-menu">
         <div class="sidebar-header">
           <button id="menuBtn">☰</button>
-          <h2>MANAGERS</h2>
+          <h2>Managers</h2>
         </div>
         
         <div class="search-box">
           <input type="text" id="managerSearch" placeholder="SEARCH managers...">
         </div>
 
+        <!-- Favorites Section -->
         <div id="favoritesList" class="favorites-section">
           <h4>⭐ FAVORITES</h4>
           <div id="favContainer"></div>
         </div>
 
         <hr class="nav-divider">
+
+        <!-- Managers Section -->
         <div id="managerList" class="manager-buttons"></div>
+
+        <hr class="nav-divider">
+
         <div class="sidebar-footer">
           <button id="settingsBtn">⚙ SETTINGS</button>
           <button id="logoutBtn" class="logout-btn">Logout</button>
@@ -44,10 +57,13 @@
       <main class="main-content">
         <header class="content-header">
           <div class="title-area">
-            <h1 id="activeManager">Welcome back!</h1>
+            <h1 id="activeManager">Manager A</h1>
+           
+           
             <p class="subtitle">METRICS</p>
           </div>
           <button id="appointmentBtn" class="appointment-btn">APPOINTMENT</button>
+        
         </header>
         <div class="table-controls">
           <button id="addRowBtn">+ ADD ROW</button>
@@ -73,6 +89,7 @@
 <script type="module" src="api.js"></script>
 <script type="module" src="spreadsheet.js"></script>
 <script type="module" src="script.js"></script>
+<script type="module" src="dashboard.js"></script>
 
 </body>
 </html>

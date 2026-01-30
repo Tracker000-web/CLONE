@@ -1,9 +1,34 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from functools import wraps
 import secrets 
 
 app = Flask(__name__)
 CORS(app)
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        # Check if 'Authorization' header is present
+        if 'Authorization' in request.headers:
+            # Split "Bearer <token>"
+            auth_header = request.headers['Authorization']
+            token = auth_header.split(" ")[1] if " " in auth_header else None
+
+        if not token:
+            return jsonify({'message': 'Token is missing!'}), 401
+
+        try:
+            # Here you would verify the token (e.g., jwt.decode)
+            # For now, we'll just check if it matches our storage
+            if token != "your-stored-secret-token":
+                raise Exception("Invalid Token")
+        except:
+            return jsonify({'message': 'Token is invalid!'}), 401
+            
+        return f(*args, **kwargs)
+    return decorated
 
 @app.route("/api/me")
 def me():

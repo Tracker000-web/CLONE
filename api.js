@@ -5,6 +5,33 @@ import { UI } from './ui.js';
 const BASE_URL = "http://127.0.0.1:5000";
 const DEFAULT_AVATAR = "https://ui-avatars.com/api/?background=random&name=";
 
+export async function authenticatedFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('userToken');
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+    };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+        ...options,
+        headers
+    });
+
+    if (response.status === 401) {
+        // Optional: Auto-logout if token is expired/invalid
+        localStorage.removeItem('userToken');
+        window.location.href = 'index.html';
+    }
+
+    return response.json();
+}
+
+
 export const API = {
     async checkSession() {
         const res = await fetch(`${BASE_URL}/api/me`, { credentials: "include" });

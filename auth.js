@@ -76,6 +76,21 @@ export const Auth = {
     }
 };
 
+export function checkAuth() {
+    const token = localStorage.getItem('userToken'); // Or use cookies/session
+    if (!token) {
+        // If no token, kick them back to the login page
+        window.location.href = 'index.html';
+        return false;
+    }
+    return true;
+}
+
+export function logout() {
+    localStorage.removeItem('userToken');
+    window.location.href = 'index.html';
+}
+
 function toggleAuth(view) {
   document.getElementById('login-section').style.display = view === 'login' ? 'block' : 'none';
   document.getElementById('signup-section').style.display = view === 'signup' ? 'block' : 'none';
