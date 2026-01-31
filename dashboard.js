@@ -67,13 +67,30 @@ window.addEventListener('offline', () => {
     UI.updateConnectionStatus(false);
 }
 );
-// --- UI CONTROLS ---
-if (menuBtn) {
-menuBtn.onclick = () => { sideMenu.classList.add("open"); overlay.classList.add("active"); };
-overlay.onclick = () => { sideMenu.classList.remove("open"); overlay.classList.remove("active"); };
-settingsBtn.onclick = () => { settingsPanel.style.display = settingsPanel.style.display === "block" ? "none" : "block"; };
-managerSearch.oninput = () => renderManagers(managerSearch.value);
-}   
+// Check menu button and side menu
+if (menuBtn && sideMenu && overlay) {
+    menuBtn.onclick = () => { 
+        sideMenu.classList.add("open"); 
+        overlay.classList.add("active"); 
+    };
+    overlay.onclick = () => { 
+        sideMenu.classList.remove("open"); 
+        overlay.classList.remove("active"); 
+    };
+}
+
+// Check settings panel
+if (settingsBtn && settingsPanel) {
+    settingsBtn.onclick = () => { 
+        settingsPanel.style.display = settingsPanel.style.display === "block" ? "none" : "block"; 
+    };
+}
+
+// Check manager search
+if (managerSearch) {
+    managerSearch.oninput = () => renderManagers(managerSearch.value);
+}
+
 notifyToggle.onchange = () => {
     globalState.settings.notifications = notifyToggle.checked;
     saveSettings();
