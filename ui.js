@@ -63,7 +63,7 @@ export function initSidebar() {
         menuBtn.addEventListener('click', () => {
             sideMenu.classList.toggle('collapsed');
             
-            # Optional: Change the icon or save preference to localStorage
+            // Optional: Change the icon or save preference to localStorage
             const isCollapsed = sideMenu.classList.contains('collapsed');
             localStorage.setItem('sidebarState', isCollapsed ? 'closed' : 'open');
         });

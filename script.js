@@ -423,7 +423,8 @@ if (signupForm) {
 
 // --- UI CONTROLS ---
 if (menuBtn) {
-menuBtn.onclick = () => { sideMenu.classList.add("open"); overlay.classList.add("active"); };
+    menuBtn.onclick = () => { sideMenu.classList.add("open"); overlay.classList.add("active"); };
+
 overlay.onclick = () => { sideMenu.classList.remove("open"); overlay.classList.remove("active"); };
 settingsBtn.onclick = () => { settingsPanel.style.display = settingsPanel.style.display === "block" ? "none" : "block"; };
 managerSearch.oninput = () => renderManagers(managerSearch.value);
