@@ -2,12 +2,9 @@ import { api } from './api.js';
 import { State } from './state.js';
 import { UI } from './ui.js';
 
-// UI Elements (localized to this module)
 const loginSection = document.getElementById('login-section');
 const signupSection = document.getElementById('signup-section');
 const appContainer = document.getElementById("app");
-const signupBtn = document.getElementById('show-signup');
-const loginForm = document.getElementById('login-form');
 
 export const Auth = {
     async handleLogin(email, password, rememberMe) {
