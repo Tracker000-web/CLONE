@@ -78,6 +78,26 @@
     </div>
   </div>
 
-<script type="module" src="auth.js"></script>
+  <script type="module">
+  import { Auth } from './auth.js';
+
+    // Listen for the login form submission
+    const loginForm = document.getElementById('login-form');
+  
+    if (loginForm) {
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault(); // Prevents the "?" refresh!
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('login-password').value;
+      const rememberMe = loginForm.querySelector('input[name="remember"]').checked;
+
+      // Call your handleLogin function from auth.js
+      await Auth.handleLogin(email, password, rememberMe);
+    });
+    }
+  </script>
+<script type="module" src="app.js"></script>
+
 </body>
 </html>

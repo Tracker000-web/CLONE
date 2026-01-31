@@ -2,6 +2,14 @@ const mysql = require('mysql2/promise');
 const express = require('express');
 const cors = require('cors'); 
 const app = express();
+const PORT = 5000;
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'Benito1997!',
+    database: 'my_app_db'
+});
 
 app.use(cors({
     origin: 'http://127.0.0.1:5500', // Matches your frontend URL
@@ -88,4 +96,5 @@ app.delete("/api/users/:id", isAdmin, async (req, res) => {
     }
 });
 
-app.listen(5000, () => console.log('Backend running on http://localhost:5000'));
+app.listen(PORT, () => 
+    console.log(`Backend running on http://localhost:${PORT}`));

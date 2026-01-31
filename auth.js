@@ -5,31 +5,44 @@ import { UI } from './ui.js';
 
 export const Auth = {
     async handleLogin(email, password, rememberMe) {
-    try {
-        const response = await api.login(email, password); 
-        
-        // 1. Store the session and the role
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userToken', response.token); 
-        localStorage.setItem('userRole', response.user.role); // Crucial for routing
+        try {
+            const response = await api.login(email, password); 
+            
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userToken', response.token); 
+            localStorage.setItem('userRole', response.user.role);
 
-        UI.showToast("Welcome back!", "success");
+            UI.showToast("Welcome back!", "success");
 
-        // 2. Redirect based on role
-        if (response.user.role === 'admin') {
-            window.location.href = 'admin.html'; // Admin Dashboard
-        } else {
-            window.location.href = 'dashboard.html'; // Regular User Dashboard
+            if (response.user.role === 'admin') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        } catch (err) {
+            UI.showToast(err.message, "error");
         }
-    } catch (err) {
-        UI.showToast(err.message, "error");
     }
-    }
+}; // <--- THIS BRACE CLOSES THE AUTH OBJECT
 
-    logout() {
-        localStorage.clear();
-        window.location.href = 'index.html';
-    }
+// MOVE THESE OUTSIDE
+window.logout = () => {
+    localStorage.clear();
+    window.location.href = 'index.html';
+};
+
+window.showLogin = () => {
+    const loginSection = document.getElementById('login-section');
+    const appSection = document.getElementById('app-section');
+    if (loginSection) loginSection.style.display = 'block';
+    if (appSection) appSection.style.display = 'none';
+};
+
+window.showApp = () => {
+    const loginSection = document.getElementById('login-section');
+    const appSection = document.getElementById('app-section');
+    if (loginSection) loginSection.style.display = 'none';
+    if (appSection) appSection.style.display = 'block';
 };
 
 // Global expose for inline HTML

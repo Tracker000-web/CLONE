@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) {
         console.warn("Session check failed. Backend might be offline.");
         // Only show login UI if elements exist on this page
-        Auth.showLogin();
+        window.showLogin();
     }
 
     // 2. INITIAL COMPONENT RENDER
