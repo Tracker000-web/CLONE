@@ -1,4 +1,4 @@
-import { state, saveSettings } from './config.js';
+import { state } from './state.js';
 import * as api from './api.js';
 import * as ui from './ui.js';
 

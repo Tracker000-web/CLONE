@@ -62,17 +62,17 @@ export const Auth = {
     },
 
     showApp() {
-        loginSection.style.display = "none";
-        signupSection.style.display = "none";
-        appContainer.style.display = "block";
+        if (loginSection) loginSection.style.display = "none";
+        if (signupSection) signupSection.style.display = "none";
+        if (appContainer) appContainer.style.display = "block";
         // Trigger a custom event so app.js knows to refresh the UI
         document.dispatchEvent(new CustomEvent('authChange'));
     },
 
     showLogin() {
-        appContainer.style.display = "none";
-        signupSection.style.display = "none";
-        loginSection.style.display = "block";
+        if (appContainer) appContainer.style.display = "none";
+        if (signupSection) signupSection.style.display = "none";
+        if (loginSection) loginSection.style.display = "block";
     }
 };
 
