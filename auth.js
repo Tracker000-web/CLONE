@@ -1,4 +1,4 @@
-import { API } from './api.js';
+import { api } from './api.js';
 import { State } from './state.js';
 import { UI } from './ui.js';
 

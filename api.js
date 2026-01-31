@@ -5,9 +5,9 @@ import { UI } from './ui.js';
 const BASE_URL = "http://127.0.0.1:5000";
 const DEFAULT_AVATAR = "https://ui-avatars.com/api/?background=random&name=";
 
+// This helper handles the token for you
 export async function authenticatedFetch(endpoint, options = {}) {
     const token = localStorage.getItem('userToken');
-    
     const headers = {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -32,9 +32,9 @@ export async function authenticatedFetch(endpoint, options = {}) {
 }
 
 
-export const API = {
+export const api = {
     async checkSession() {
-        const res = await fetch(`${BASE_URL}/api/me`, { credentials: "include" });
+        const res = await authenticatedFetch('/api/me');
         if (!res.ok) throw new Error("Not logged in");
         
         const data = await res.json();

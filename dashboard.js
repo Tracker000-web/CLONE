@@ -1,12 +1,13 @@
 // dashboard.js
 import { checkAuth } from './auth.js';
-import { globalState } from './state.js';
+import { State } from './state.js';
 import { authenticatedFetch } from './api.js';
 import { initSidebar, loadSidebarState } from './ui.js';
 
 // UI Elements
 const sideMenu = document.getElementById("sideMenu");
 const overlay = document.getElementById("overlay");
+const settingsBtn = document.getElementById("settingsBtn");
 const settingsPanel = document.getElementById("settingsPanel");
 const managerSearch = document.getElementById("managerSearch");
 const notifyToggle = document.getElementById("notifyToggle");
@@ -24,10 +25,11 @@ export async function fetchData() {
     return await response.json();
 }
 
+// Initializing Dashboard Logic
 export async function initDashboard() {
     try {
         // 1. Verify session
-        const user = await API.checkSession();
+        const user = await api.checkSession();
         State.currentUser = user;
 
         // 2. Fetch data from your backend
@@ -59,13 +61,6 @@ async function loadDashboardStats() {
     } catch (error) {
         console.error("Failed to load stats:", error);
     }
-}
-
-// 2. Initialize Dashboard Logic
-function initDashboard() {
-    // Your code to fetch data from api.js goes here
-    loadDashboardStats();
-
 }
 
 // 3. Attach Logout Event

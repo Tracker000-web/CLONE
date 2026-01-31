@@ -1,6 +1,6 @@
 /* ---------- spreadsheet.js ---------- */
 import { State } from './state.js';
-import { API } from './api.js';
+import { api } from './api.js';
 import { UI } from './ui.js';
 
 export const Spreadsheet = {

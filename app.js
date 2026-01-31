@@ -1,7 +1,7 @@
 /* ---------- app.js ---------- */
-import { State } from './state.js';
+import { state } from './state.js';
 import { Auth } from './auth.js';
-import { API } from './api.js';
+import { api } from './api.js';
 import { Spreadsheet } from './spreadsheet.js';
 import { UI } from './ui.js';
 
@@ -22,10 +22,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Only attempt session check if server is expected to be up
     try {
-        State.currentUser = await API.checkSession();
-        State.isLoggedIn = true;
+        state.currentUser = await api.checkSession();
+        state.isLoggedIn = true;
         Auth.showApp();
-        if (navigator.onLine) API.processSyncQueue();
+        if (navigator.onLine) api.processSyncQueue();
     } catch (err) {
         console.warn("Session check failed. Backend might be offline.");
         // Only show login UI if elements exist on this page
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 2. INITIAL COMPONENT RENDER
-    if (State.settings?.theme) applyTheme(State.settings.theme);
+    if (state.settings?.theme) applyTheme(state.settings.theme);
     
     // Check if Spreadsheet functions exist before calling
     if (typeof Spreadsheet.renderManagers === 'function') {
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     
     const lastId = localStorage.getItem("activeManagerId");
-    const lastManager = State.managers.find(m => m.id == lastId);
+    const lastManager = state.managers.find(m => m.id == lastId);
     if (lastManager && typeof Spreadsheet.loadSpreadsheet === 'function') {
         Spreadsheet.loadSpreadsheet(lastManager);
     }
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 6. GLOBAL OBSERVERS
     window.addEventListener('online', () => {
         UI.updateConnectionStatus(true);
-        API.processSyncQueue();
+        api.processSyncQueue();
     });
 
     window.addEventListener('offline', () => {
@@ -132,14 +132,6 @@ function updateUIForRole() {
 function applyTheme(theme) {
     document.body.className = `theme-${theme}`;
 }
-
-export const API = {
-    async checkSession() {
-        const response = await fetch('http://127.0.0.1:5000/api/me');
-        if (!response.ok) throw new Error("Unauthorized");
-        return await response.json();
-    }
-};
 
 // Add this to resolve the SyntaxError
 export async function fetchData(endpoint) {
@@ -163,7 +155,7 @@ async function renderManagers() {
         managers.forEach(m => {
             const div = document.createElement("div");
             div.className = "manager-item";
-            div.innerHTML = <span>${m.name}</span>;
+            div.innerHTML = `<span>${m.name}</span>`;
             
             // Output: When clicked, the table "pops out" (loads)
             div.onclick = () => loadSpreadsheet(m); 
