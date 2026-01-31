@@ -1,4 +1,6 @@
 /* ---------- ui.js ---------- */
+import { state } from './state.js';
+
 export const UI = {
     // 1. Toast Notification System
     showToast(message, type = 'info') {
@@ -76,4 +78,19 @@ export function loadSidebarState() {
     if (localStorage.getItem('sidebarState') === 'closed') {
         sideMenu.classList.add('collapsed');
     }
+}
+
+export function updateUIForRole() {
+    const isAdmin = state.currentUser && state.currentUser.role === 'admin';
+    document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.display = isAdmin ? 'block' : 'none';
+    });
+}
+
+export function applySettings() {
+    const notifyToggle = document.getElementById("notifyToggle");
+    if (notifyToggle) notifyToggle.checked = state.settings.notifications;
+    
+    document.body.className = `theme-${state.settings.theme}`;
+    // Removed background image logic to fix the 404 error
 }

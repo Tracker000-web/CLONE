@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tracker</title>
 
-   <link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='3' width='7' height='7' fill='white'></rect><rect x='14' y='3' width='7' height='7' fill='white'></rect><rect x='14' y='14' width='7' height='7' fill='white'></rect><rect x='3' y='14' width='7' height='7' fill='white'></rect></svg>">
+  <link id="favicon" rel="icon" href="data:image/svg+xml,
+   <svg xmlns='http://www.w3.org/2000/svg'viewBox='0 0 24 24'>
+    <rect x='3' y='3' width='7' height='7' fill='white'></rect>
+    <rect x='14' y='3' width='7' height='7' fill='white'></rect>
+    <rect x='14' y='14' width='7' height='7' fill='white'></rect>
+    <rect x='3' y='14' width='7' height='7' fill='white'></rect>
+    </svg>">
 
   <link rel="stylesheet" href="styles.css">
   <link rel="manifest" href="manifest.json">
@@ -18,8 +24,9 @@
         // If not logged in, redirect to index.html immediately
         window.location.href = 'index.html';
     }
-</script>
+  </script>
 </head>
+
 <body class="theme-dark">
   <div id="app">
     <div class="crm-container">
@@ -89,6 +96,8 @@
 <script type="module" src="spreadsheet.js"></script>
 <script type="module" src="script.js"></script>
 <script type="module" src="dashboard.js"></script>
+<script type="module" src="app.js"></script>
+<script type="module" src="main.js"></script>
 
 </body>
 </html>

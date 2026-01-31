@@ -50,8 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 4. EVENT LISTENERS: UI & NAVIGATION
-
- 
     document.getElementById("menuBtn").onclick = () => {
         document.getElementById("sideMenu").classList.add("open");
         document.getElementById("overlay").classList.add("active");

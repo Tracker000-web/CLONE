@@ -10,7 +10,7 @@ app.use(cors({
 
 app.use(express.json());
 
-cconst db = mysql.createPool({
+const db = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'Benito1997!', 
