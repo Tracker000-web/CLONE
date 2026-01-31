@@ -5,6 +5,11 @@ import { API } from './api.js';
 import { Spreadsheet } from './spreadsheet.js';
 import { UI } from './ui.js';
 
+const loginBtn = document.getElementById('loginBtn');
+if (loginBtn) {
+    loginBtn.onclick = () => { /* your logic */ };
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. SESSION & NETWORK INITIALIZATION
     UI.updateConnectionStatus(navigator.onLine);
