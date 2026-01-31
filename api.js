@@ -28,7 +28,7 @@ export async function authenticatedFetch(endpoint, options = {}) {
         return;
     }
 
-    const data = await response.json();
+    var
 
     // Throw an error if the server returns a 400/500 range status
     if (!response.ok) {
