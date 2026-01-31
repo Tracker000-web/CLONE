@@ -33,3 +33,10 @@ export const state = {
 };
 
 export function saveData() { localStorage.setItem("managerData", JSON.stringify(state.managers)); }
+
+export const globalState = {
+    currentUser: null,
+    settings: { theme: 'light', notifications: true },
+    managers: [],
+    syncQueue: []
+};

@@ -92,6 +92,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         logoutBtn.onclick = () => Auth.logout();
     }
 
+    
+
     // 5. DATA & ADMIN ACTIONS
     const addRowBtn = document.getElementById("addRowBtn");
     if (addRowBtn) {
@@ -139,6 +141,14 @@ export async function fetchData(endpoint) {
     if (!response.ok) throw new Error("Data fetch failed");
     return await response.json();
 }
+
+const toggleLinks = document.querySelectorAll('.toggle-auth-link'); // Add this class to your <a> tags
+toggleLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Put your toggle logic here
+    });
+});
 
 // This runs when the user logs in or refreshes the page
 async function renderManagers() {

@@ -45,6 +45,19 @@ export async function initDashboard() {
         // Handle the ERR_CONNECTION_REFUSED error
         UI.showToast("Server connection failed. Check your backend.", "error");
     }
+
+    // 4. Load Dashboard Stats
+    await loadDashboardStats();
+    
+    const role = localStorage.getItem('userRole');
+        if (role !== 'admin') {
+        // Hide the link to the Admin Logs page
+        const adminLink = document.querySelector('a[href="admin.html"]');
+        if (adminLink) adminLink.style.display = 'none';
+    
+        // Hide any other admin-specific buttons (like "Add Column")
+    document.querySelectorAll('.admin-only').forEach(el => el.remove());
+}
 }
 
 
@@ -163,6 +176,7 @@ async function loadManagers() {
 
 // Call the function when the page loads
 document.addEventListener('DOMContentLoaded', loadManagers);
+document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
 
 
 

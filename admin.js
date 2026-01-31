@@ -10,6 +10,10 @@ import { requireAdmin, getUser } from "./auth.js";
 requireAdmin(); 
 const currentUser = getUser();
 
+const role = localStorage.getItem('userRole');
+if (role !== 'admin') {
+    window.location.href = 'dashboard.html'; // Boot them to the user page
+}
 // Global state for logs to allow filtering without re-fetching
 let logs = []; 
 
