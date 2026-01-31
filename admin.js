@@ -72,6 +72,42 @@ function filterLogs() {
     renderLogs(filtered);
 }
 
+// Function for Admin to add a new manager
+async function addManager(name) {
+    const newManager = {
+        name: name,
+        rows: [["", "", "Pending", ""]] // Initial template row
+    };
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/add-manager", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newManager)
+        });
+
+        if (response.ok) {
+            alert("Manager Tracker Added successfully!");
+            // Refresh the list immediately if the admin is also looking at the sidebar
+            renderManagers(); 
+        }
+    } catch (err) {
+        console.error("Failed to add manager to database:", err);
+    }
+}
+
+function renderMetricsUI(counts) {
+    const container = document.querySelector(".subtitle"); // Label this as "METRICS"
+    container.innerHTML = `
+        <h3>DISPOSITIONS</h3>
+        <ul>
+            <li>Dials: ${counts["Number Dials"]}</li>
+            <li>Appointments: ${counts["Appointments"]}</li>
+            <li>Confirmed: ${counts["Confirmed Preset Appointment"]}</li>
+            </ul>
+    `;
+}
+
 // --- 5. EVENT LISTENERS & DOM READY ---
 document.addEventListener("DOMContentLoaded", () => {
     // Initial data load

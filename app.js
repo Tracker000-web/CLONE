@@ -147,3 +147,30 @@ export async function fetchData(endpoint) {
     if (!response.ok) throw new Error("Data fetch failed");
     return await response.json();
 }
+
+// This runs when the user logs in or refreshes the page
+async function renderManagers() {
+    const managerList = document.getElementById("managerList");
+    if (!managerList) return;
+
+    try {
+        // Fetch the list of managers added by the Admin
+        const res = await fetch("http://127.0.0.1:5000/api/managers");
+        const managers = await res.json();
+
+        managerList.innerHTML = ""; // Clear old list
+
+        managers.forEach(m => {
+            const div = document.createElement("div");
+            div.className = "manager-item";
+            div.innerHTML = <span>${m.name}</span>;
+            
+            // Output: When clicked, the table "pops out" (loads)
+            div.onclick = () => loadSpreadsheet(m); 
+            
+            managerList.appendChild(div);
+        });
+    } catch (err) {
+        console.warn("Could not fetch managers. Server might be offline.");
+    }
+}
