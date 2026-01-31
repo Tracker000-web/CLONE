@@ -82,6 +82,39 @@ export const Spreadsheet = {
         container.appendChild(table);
     },
 
+    updateDispositionsMetrics(rows) {
+        const counts = {
+            "No Answer": 0, 
+            "Voicemail": 0, 
+            "Not in Service": 0, 
+            "Left Message": 0,
+            "Call Backs": 0, 
+            "Appointments": 0, 
+            "Preset Appointment": 0,
+            "Confirmed Preset Appointment": 0, "Number Dials": rows.length
+        };
+
+        rows.forEach(row => {
+            const disposition = row[2]; 
+            if (counts.hasOwnProperty(disposition)) counts[disposition]++;
+        });
+
+        this.renderMetricsUI(counts);
+    },
+
+    renderMetricsUI(counts) {
+        const container = document.querySelector(".subtitle");
+        if (!container) return; // Safety check to prevent app.js:63 errors
+        container.innerHTML = `
+            <h3>DISPOSITIONS</h3>
+            <ul>
+                <li>Dials: ${counts["Number Dials"]}</li>
+                <li>Appointments: ${counts["Appointments"]}</li>
+                <li>Confirmed: ${counts["Confirmed Preset Appointment"]}</li>
+            </ul>
+        `;
+    },
+
     downloadCSV() {
         if (!State.currentActiveManager) return;
         

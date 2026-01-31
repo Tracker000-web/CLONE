@@ -14,8 +14,8 @@ export const Auth = {
         try {
             // In a real app, you'd fetch a token here. 
             // For now, we update local state based on checkSession logic.
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const token = localStorage.getItem('userToken'); 
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const token = localStorage.getItem('userToken'); 
             State.currentUser = await API.checkSession();
             State.isLoggedIn = true;
 
@@ -87,6 +87,7 @@ export function checkAuth() {
         window.location.href = 'index.html';
         return false;
     }
+        return true;
 }
 
 export function logout() {

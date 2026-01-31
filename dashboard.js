@@ -1,7 +1,6 @@
-import { fetchData } from './api.js';
+// dashboard.js
 import { checkAuth } from './auth.js';
 import { globalState } from './state.js';
-import { checkAuth, logout } from './auth.js';
 import { authenticatedFetch } from './api.js';
 import { initSidebar, loadSidebarState } from './ui.js';
 
@@ -16,6 +15,34 @@ const menuBtn = document.getElementById("menuBtn");
 // Apply saved theme on load
 function applyTheme(theme) {
     document.body.className = `theme-${theme}`;
+}
+
+
+// API Interaction Example
+export async function fetchData() {
+    const response = await fetch(`${CONFIG.API_URL}/data`);
+    return await response.json();
+}
+
+export async function initDashboard() {
+    try {
+        // 1. Verify session
+        const user = await API.checkSession();
+        State.currentUser = user;
+
+        // 2. Fetch data from your backend
+        const data = await fetchData('managers'); 
+        
+        // 3. Populate State and UI
+        State.managers = data;
+        Spreadsheet.renderManagers();
+        
+        UI.showToast(`Welcome, ${user.username}`, "success");
+    } catch (error) {
+        console.error("Dashboard failed to initialize:", error);
+        // Handle the ERR_CONNECTION_REFUSED error
+        UI.showToast("Server connection failed. Check your backend.", "error");
+    }
 }
 
 
@@ -37,6 +64,8 @@ async function loadDashboardStats() {
 // 2. Initialize Dashboard Logic
 function initDashboard() {
     // Your code to fetch data from api.js goes here
+    loadDashboardStats();
+
 }
 
 // 3. Attach Logout Event
@@ -107,10 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSidebarState(); // Set preferred state
     initSidebar();      // Enable clicking
 });
-
-
-// dashboard.js
-import { authenticatedFetch } from './api.js';
 
 async function loadManagers() {
     const managerContainer = document.getElementById('managerList');

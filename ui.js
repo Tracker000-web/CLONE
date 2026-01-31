@@ -92,5 +92,4 @@ export function applySettings() {
     if (notifyToggle) notifyToggle.checked = state.settings.notifications;
     
     document.body.className = `theme-${state.settings.theme}`;
-    // Removed background image logic to fix the 404 error
 }

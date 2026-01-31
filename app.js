@@ -5,80 +5,92 @@ import { API } from './api.js';
 import { Spreadsheet } from './spreadsheet.js';
 import { UI } from './ui.js';
 
-const loginBtn = document.getElementById('loginBtn');
-if (loginBtn) {
-    loginBtn.onclick = () => { /* your logic */ };
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. SESSION & NETWORK INITIALIZATION
     UI.updateConnectionStatus(navigator.onLine);
     
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-        window.location.href = 'index.html';
-        return;
+    // Safety check for login status
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+    if (!isLoggedIn) {
+        // If we are not on index.html and not logged in, redirect
+        if (!window.location.pathname.includes('index.html')) {
+            window.location.href = 'index.html';
+            return;
+        }
     }
 
+    // Only attempt session check if server is expected to be up
     try {
         State.currentUser = await API.checkSession();
         State.isLoggedIn = true;
         Auth.showApp();
         if (navigator.onLine) API.processSyncQueue();
-    } catch {
+    } catch (err) {
+        console.warn("Session check failed. Backend might be offline.");
+        // Only show login UI if elements exist on this page
         Auth.showLogin();
     }
 
     // 2. INITIAL COMPONENT RENDER
-    applyTheme(State.settings.theme);
-    Spreadsheet.renderManagers();
+    if (State.settings?.theme) applyTheme(State.settings.theme);
+    
+    // Check if Spreadsheet functions exist before calling
+    if (typeof Spreadsheet.renderManagers === 'function') {
+        Spreadsheet.renderManagers();
+    }
     
     const lastId = localStorage.getItem("activeManagerId");
     const lastManager = State.managers.find(m => m.id == lastId);
-    if (lastManager) Spreadsheet.loadSpreadsheet(lastManager);
-
-    // 3. EVENT LISTENERS: AUTH & FORMS
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-        window.location.href = 'index.html';
+    if (lastManager && typeof Spreadsheet.loadSpreadsheet === 'function') {
+        Spreadsheet.loadSpreadsheet(lastManager);
     }
 
-
-
+    // 3. EVENT LISTENERS: AUTH & FORMS
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.onsubmit = (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const pass = document.querySelector('#password').value;
-            const remember = document.getElementById('rememberMe').checked;
+            const remember = document.getElementById('rememberMe')?.checked;
             Auth.handleLogin(email, pass, remember);
         };
     }
 
-    // 4. EVENT LISTENERS: UI & NAVIGATION
-    document.getElementById("menuBtn").onclick = () => {
-        document.getElementById("sideMenu").classList.add("open");
-        document.getElementById("overlay").classList.add("active");
-    };
+    // 4. EVENT LISTENERS: UI & NAVIGATION (Fixes Null Property Crashes)
+    const menuBtn = document.getElementById("menuBtn");
+    if (menuBtn) {
+        menuBtn.onclick = () => {
+            document.getElementById("sideMenu")?.classList.add("open");
+            document.getElementById("overlay")?.classList.add("active");
+        };
+    }
 
-    document.getElementById("overlay").onclick = () => {
-        document.getElementById("sideMenu").classList.remove("open");
-        document.getElementById("overlay").classList.remove("active");
-    };
+    const overlay = document.getElementById("overlay");
+    if (overlay) {
+        overlay.onclick = () => {
+            document.getElementById("sideMenu")?.classList.remove("open");
+            overlay.classList.remove("active");
+        };
+    }
 
-    document.getElementById("managerSearch").oninput = (e) => {
-        Spreadsheet.renderManagers(e.target.value);
-    };
-    document.getElementById("settingsBtn").onclick = () => {
-        UI.openSettingsModal();
-    };
+    const managerSearch = document.getElementById("managerSearch");
+    if (managerSearch) {
+        managerSearch.oninput = (e) => {
+            Spreadsheet.renderManagers(e.target.value);
+        };
+    }
 
-    document.getElementById("logoutBtn").onclick = () => {
-        Auth.logout();
-    };
-       document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('isLoggedIn');
-        window.location.href = 'index.html';
-    });
+    const settingsBtn = document.getElementById("settingsBtn");
+    if (settingsBtn) {
+        settingsBtn.onclick = () => UI.openSettingsModal();
+    }
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        logoutBtn.onclick = () => Auth.logout();
+    }
 
     // 5. DATA & ADMIN ACTIONS
     const addRowBtn = document.getElementById("addRowBtn");
@@ -96,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         exportBtn.onclick = () => Spreadsheet.downloadCSV();
     }
 
-    // 6. GLOBAL OBSERVERS (Network & Auth)
+    // 6. GLOBAL OBSERVERS
     window.addEventListener('online', () => {
         UI.updateConnectionStatus(true);
         API.processSyncQueue();
@@ -110,7 +122,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // --- HELPER FUNCTIONS ---
-
 function updateUIForRole() {
     const isAdmin = State.currentUser?.role === 'admin';
     document.querySelectorAll('.admin-only').forEach(el => {
@@ -122,45 +133,17 @@ function applyTheme(theme) {
     document.body.className = `theme-${theme}`;
 }
 
-// 7. SERVICE WORKER REGISTRATION
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log('Service Worker: Active'))
-            .catch(err => console.error('Service Worker: Failed', err));
-    });
+export const API = {
+    async checkSession() {
+        const response = await fetch('http://127.0.0.1:5000/api/me');
+        if (!response.ok) throw new Error("Unauthorized");
+        return await response.json();
+    }
+};
+
+// Add this to resolve the SyntaxError
+export async function fetchData(endpoint) {
+    const response = await fetch(`http://127.0.0.1:5000/api/${endpoint}`);
+    if (!response.ok) throw new Error("Data fetch failed");
+    return await response.json();
 }
-
-/* ---------- app.js addition ---------- */
-const saveProfileBtn = document.getElementById("saveProfileBtn");
-const profilePicInput = document.getElementById("profilePicInput");
-
-if (saveProfileBtn) {
-    saveProfileBtn.onclick = async () => {
-        const name = document.getElementById('profile-name').value;
-        const phone = document.getElementById('profile-phone').value;
-        const file = profilePicInput.files[0];
-
-        let profileData = { name, phone };
-
-        if (file) {
-            // Convert image to string before sending
-            const base64String = await UI.handleImageUpload(file);
-            profileData.profilePic = base64String;
-        }
-
-        try {
-            await API.updateProfile(profileData);
-            UI.showToast("Profile Updated!", "success");
-            
-            // Update local state so the UI reflects changes immediately
-            State.currentUser.name = name;
-            if (profileData.profilePic) {
-                document.getElementById('nav-profile-pic').src = profileData.profilePic;
-            }
-        } catch (err) {
-            UI.showToast("Update failed", "error");
-        }
-    };
-}
-
