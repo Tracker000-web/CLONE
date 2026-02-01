@@ -4,6 +4,9 @@ const cors = require('cors');
 const app = express();
 const PORT = 5000;
 
+app.use(cors());
+app.use(express.json());
+
 // 1. Unified Database Pool (Better for performance)
 const db = mysql.createPool({
   host: 'localhost',
@@ -21,7 +24,6 @@ app.use(cors({
 app.use(express.json());
 
 // --- AUTHENTICATION ROUTES (REQUIRED FOR LOGIN) ---
-
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -42,7 +44,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// --- LOG ROUTES ---
+// --- LOG ROUTES 
 
 app.get('/api/logs', async (req, res) => {
     try {
@@ -60,6 +62,7 @@ app.post('/api/logs', async (req, res) => {
         const [result] = await db.query(sql, [user, role, phone, disposition, history, timestamp]);
         res.json({ message: "Log added", id: result.insertId });
     } catch (err) {
+        console.error("❌ Database Insert Error:", err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -74,5 +77,8 @@ app.delete("/api/users/:id", async (req, res) => {
         res.status(500).json({ error: "Failed to delete user" });
     }
 });
+
+
+
 
 app.listen(PORT, () => console.log(`🚀 Backend running on http://localhost:${PORT}`));

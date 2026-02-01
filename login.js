@@ -1,0 +1,44 @@
+import { authenticatedFetch } from './api.js'; 
+
+async function handleLogin(e) {
+    e.preventDefault();
+
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('login-password');
+    
+    if (!emailInput || !passwordInput) {
+        console.error("Could not find input fields in the HTML.");
+        return;
+    }
+
+    const email = emailInput.value;
+    const password = passwordInput.value;
+
+    try {
+        const data = await authenticatedFetch('/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }) // ✅ FIX
+        });
+
+        console.log("Login successful!", data);
+
+        localStorage.setItem('userToken', data.token);
+        localStorage.setItem('userRole', data.role);
+
+        // Redirect based on role
+        if (data.role === "admin") {
+            window.location.href = 'admin.html';
+        } else {
+            window.location.href = 'dashboard.html';
+        }
+
+    } catch (error) {
+        console.error("Login failed:", error.message);
+        alert("Login Error: " + error.message);
+    }
+}
+
+const loginForm = document.getElementById('login-form');
+if (loginForm) {
+    loginForm.addEventListener('submit', handleLogin);
+}

@@ -5,8 +5,16 @@ import { UI } from './ui.js';
 const BASE_URL = "http://127.0.0.1:5000";
 const DEFAULT_AVATAR = "https://ui-avatars.com/api/?background=random&name=";
 
+/**
+ * Centralized authenticated fetch
+ */
 export async function authenticatedFetch(endpoint, options = {}) {
     const token = localStorage.getItem('userToken');
+
+    const url = endpoint.startsWith('http')
+        ? endpoint
+        : `${BASE_URL}${endpoint}`;
+
     const headers = {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -16,58 +24,84 @@ export async function authenticatedFetch(endpoint, options = {}) {
         headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${BASE_URL}${endpoint}`, {
-        ...options,
-        headers
-    });
+    let response;
 
-    // Automatically handle unauthorized access
+    try {
+        response = await fetch(url, {
+            ...options,
+            headers
+        });
+    } catch (networkError) {
+        // Server is down / unreachable
+        throw new Error("Cannot reach server. Is the backend running?");
+    }
+
+    // Handle unauthorized globally
     if (response.status === 401) {
-        localStorage.clear(); 
+        localStorage.clear();
         window.location.href = 'index.html';
-        return;
+        return new Promise(() => {});
     }
 
-    var
+    // Detect non-JSON responses (e.g., HTML error pages)
+    const contentType = response.headers.get("content-type");
+    let data = null;
 
-    // Throw an error if the server returns a 400/500 range status
+    if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text);
+        throw new Error(
+            `Server returned non-JSON response (status ${response.status})`
+        );
+    }
+
     if (!response.ok) {
-        throw new Error(data.message || `Error: ${response.status}`);
+        throw new Error(data.message || `Request failed (${response.status})`);
     }
 
-    return data; // Returns the actual object (no need to call .json() again)
+    return data;
 }
 
+/**
+ * API wrapper
+ */
 export const api = {
+
     async login(email, password) {
-        return await authenticatedFetch('/login', {
+        return authenticatedFetch('/login', {
             method: 'POST',
             body: JSON.stringify({ email, password })
         });
     },
-    
+
     async checkSession() {
-        // data is already the parsed JSON object here
         const data = await authenticatedFetch('/api/me');
-        
+
         if (!data.profilePic) {
-            data.profilePic = `${DEFAULT_AVATAR}${encodeURIComponent(data.username || 'User')}`;
+            data.profilePic = `${DEFAULT_AVATAR}${encodeURIComponent(
+                data.username || 'User'
+            )}`;
         }
+
         return data;
     },
 
     async addUser(userData) {
-        return await authenticatedFetch('/add-user', {
+        return authenticatedFetch('/add-user', {
             method: 'POST',
             body: JSON.stringify(userData)
         });
     },
 
     async updateProfile(profileData) {
-        return await authenticatedFetch('/api/update-profile', {
+        return authenticatedFetch('/api/update-profile', {
             method: 'POST',
             body: JSON.stringify(profileData),
-            headers: { 'X-Role': State.currentUser?.role || 'team' }
+            headers: {
+                'X-Role': State.currentUser?.role || 'team'
+            }
         });
     },
 
@@ -80,12 +114,20 @@ export const api = {
 
         try {
             await authenticatedFetch('/api/save-cell', {
-                method: "POST",
-                headers: { "X-Role": role },
-                body: JSON.stringify({ manager_id: managerId, row, col, value })
+                method: 'POST',
+                headers: { 'X-Role': role },
+                body: JSON.stringify({
+                    manager_id: managerId,
+                    row,
+                    col,
+                    value
+                })
             });
 
-            if (!isSyncing) UI.showToast("Saved to cloud", "success");
+            if (!isSyncing) {
+                UI.showToast("Saved to cloud", "success");
+            }
+
         } catch (err) {
             if (!isSyncing) {
                 State.addToSyncQueue({ managerId, row, col, value, role });
