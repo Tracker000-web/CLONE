@@ -20,7 +20,8 @@ export const UI = {
         setTimeout(() => {
             toast.classList.add('fade-out');
             toast.ontransitionend = () => toast.remove();
-        }, 3000);
+        }, 5000
+    );
     },
 
     // 2. Network Status Indicator

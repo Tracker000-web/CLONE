@@ -51,6 +51,7 @@ export async function authenticatedFetch(endpoint, options = {}) {
         data = await response.json();
     } else {
         const text = await response.text();
+
         console.error("Non-JSON response received:", text);
         throw new Error(
             `Server returned non-JSON response (status ${response.status})`
@@ -77,7 +78,8 @@ export const api = {
     },
 
     async checkSession() {
-        const data = await authenticatedFetch('/api/me');
+        
+        const data = await authenticatedFetch('/me');
 
         if (!data.profilePic) {
             data.profilePic = `${DEFAULT_AVATAR}${encodeURIComponent(
