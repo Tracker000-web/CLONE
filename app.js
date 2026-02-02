@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginForm.onsubmit = (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
-            const pass = document.querySelector('#password').value;
+            const pass = document.querySelector('#login-password').value;
             const remember = document.getElementById('rememberMe')?.checked;
             Auth.handleLogin(email, pass, remember);
         };
