@@ -14,7 +14,7 @@ export const Auth = {
 
             UI.showToast("Welcome back!", "success");
 
-            if (response.user.role === 'admin') {
+            if (response.role === 'admin') {
                 window.location.href = 'admin.html';
             } else {
                 window.location.href = 'dashboard.html';

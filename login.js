@@ -1,4 +1,5 @@
 import { authenticatedFetch } from './api.js'; 
+import { Auth } from './auth.js';
 
 async function handleLogin(e) {
     e.preventDefault();
@@ -11,13 +12,14 @@ async function handleLogin(e) {
         return;
     }
 
-    const email = emailInput.value;
+    const email = emailInput.value.trim();
     const password = passwordInput.value;
 
+
     try {
-        const data = await authenticatedFetch('/login', {
+        const data = await authenticatedFetch('/api/login', {
             method: 'POST',
-            body: JSON.stringify({ email, password }) // ✅ FIX
+            body: JSON.stringify({ email, password })
         });
 
         console.log("Login successful!", data);
@@ -35,10 +37,18 @@ async function handleLogin(e) {
     } catch (error) {
         console.error("Login failed:", error.message);
         alert("Login Error: " + error.message);
+        alert(error.message || "Invalid email or password");
     }
 }
 
 const loginForm = document.getElementById('login-form');
 if (loginForm) {
-    loginForm.addEventListener('submit', handleLogin);
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('login-password').value;
+        const rememberMe = loginForm.querySelector('input[name="remember"]').checked;
+
+        await Auth.handleLogin(email, password, rememberMe);
+    });
 }

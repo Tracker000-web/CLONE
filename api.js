@@ -9,6 +9,7 @@ const DEFAULT_AVATAR = "https://ui-avatars.com/api/?background=random&name=";
  * Centralized authenticated fetch
  */
 export async function authenticatedFetch(endpoint, options = {}) {
+    const controller = new AbortController();
     const token = localStorage.getItem('userToken');
 
     const url = endpoint.startsWith('http')
@@ -16,9 +17,10 @@ export async function authenticatedFetch(endpoint, options = {}) {
         : `${BASE_URL}${endpoint}`;
 
     const headers = {
-        'Content-Type': 'application/json',
-        ...options.headers,
+    ...(options.body && { 'Content-Type': 'application/json' }),
+    ...options.headers
     };
+
 
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
@@ -59,19 +61,21 @@ export async function authenticatedFetch(endpoint, options = {}) {
     }
 
     if (!response.ok) {
-        throw new Error(data.message || `Request failed (${response.status})`);
+        throw {
+            status: response.status,
+            message: data.message || `Request failed (${response.status})`
+        }
     }
 
     return data;
+    
 }
 
-/**
- * API wrapper
- */
+/*** API wrapper **/
 export const api = {
 
     async login(email, password) {
-        return authenticatedFetch('/login', {
+        return authenticatedFetch('/api/login', {
             method: 'POST',
             body: JSON.stringify({ email, password })
         });
@@ -79,7 +83,7 @@ export const api = {
 
     async checkSession() {
         
-        const data = await authenticatedFetch('/me');
+        const data = await authenticatedFetch('/api/me');
 
         if (!data.profilePic) {
             data.profilePic = `${DEFAULT_AVATAR}${encodeURIComponent(
@@ -91,7 +95,7 @@ export const api = {
     },
 
     async addUser(userData) {
-        return authenticatedFetch('/add-user', {
+        return authenticatedFetch('/api/add-user', {
             method: 'POST',
             body: JSON.stringify(userData)
         });
