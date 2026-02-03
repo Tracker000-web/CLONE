@@ -1,5 +1,5 @@
 /* ---------- state.js ---------- */
-export const State = {
+export const state = {
     isLoggedIn: false,
     currentUser: null,
     currentActiveManager: null,
@@ -21,7 +21,7 @@ export const State = {
     }
 };
 
-export const state = {
+export const State = {
     currentUser: null,
     currentActiveManager: null,
     managers: JSON.parse(localStorage.getItem("managerData")) || [
@@ -34,7 +34,7 @@ export const state = {
 
 export function saveData() { localStorage.setItem("managerData", JSON.stringify(state.managers)); }
 
-export const globalState = {
+export const globalstate = {
     currentUser: null,
     settings: { theme: 'light', notifications: true },
     managers: [],

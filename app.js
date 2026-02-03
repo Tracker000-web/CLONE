@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) {
         console.warn("Session check failed. Backend might be offline.");
         // Only show login UI if elements exist on this page
+if      (typeof window.showLogin === 'function') {
         window.showLogin();
     }
 
@@ -98,10 +99,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const addRowBtn = document.getElementById("addRowBtn");
     if (addRowBtn) {
         addRowBtn.onclick = () => {
-            if (!State.currentActiveManager) return;
-            State.currentActiveManager.rows.push(["", "", "", ""]);
-            State.saveToLocal();
-            Spreadsheet.loadSpreadsheet(State.currentActiveManager);
+            if (!state.currentActiveManager) return;
+            state.currentActiveManager.rows.push(["", "", "", ""]);
+            state.saveToLocal();
+            Spreadsheet.loadSpreadsheet(state.currentActiveManager);
         };
     }
 
@@ -121,11 +122,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.addEventListener('authChange', () => updateUIForRole());
-});
+}}); // End of DOMContentLoaded
 
 // --- HELPER FUNCTIONS ---
 function updateUIForRole() {
-    const isAdmin = State.currentUser?.role === 'admin';
+    const isAdmin = state.currentUser?.role === 'admin';
     document.querySelectorAll('.admin-only').forEach(el => {
         el.style.setProperty('display', isAdmin ? 'block' : 'none', 'important');
     });

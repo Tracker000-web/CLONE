@@ -1,6 +1,6 @@
 /* ---------- auth.js ---------- */
 import { api } from './api.js';
-import { State } from './state.js';
+import { state } from './state.js';
 import { UI } from './ui.js';
 
 export const Auth = {
@@ -14,7 +14,7 @@ export const Auth = {
 
             UI.showToast("Welcome back!", "success");
 
-            if (response.role === 'admin') {
+            if (response.user.role === 'admin') {
                 window.location.href = 'admin.html';
             } else {
                 window.location.href = 'dashboard.html';

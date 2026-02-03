@@ -1,5 +1,5 @@
 /* ---------- api.js ---------- */
-import { State } from './state.js';
+import { state } from './state.js';
 import { UI } from './ui.js';
 
 const BASE_URL = "http://127.0.0.1:5000";
@@ -106,14 +106,14 @@ export const api = {
             method: 'POST',
             body: JSON.stringify(profileData),
             headers: {
-                'X-Role': State.currentUser?.role || 'team'
+                'X-Role': state.currentUser?.role || 'team'
             }
         });
     },
 
     async saveCell(managerId, row, col, value, role, isSyncing = false) {
         if (!navigator.onLine && !isSyncing) {
-            State.addToSyncQueue({ managerId, row, col, value, role });
+            state.addToSyncQueue({ managerId, row, col, value, role });
             UI.showToast("Offline: Change queued", "info");
             return;
         }
@@ -136,7 +136,7 @@ export const api = {
 
         } catch (err) {
             if (!isSyncing) {
-                State.addToSyncQueue({ managerId, row, col, value, role });
+                state.addToSyncQueue({ managerId, row, col, value, role });
                 UI.showToast("Sync queued", "error");
             }
             throw err;
