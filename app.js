@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         state.currentUser = await api.checkSession();
         state.isLoggedIn = true;
-        Auth.showApp();
+        window.showApp();
         if (navigator.onLine) api.processSyncQueue();
     } catch (err) {
         console.warn("Session expired or backend offline.");

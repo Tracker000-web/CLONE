@@ -10,11 +10,11 @@ export const Auth = {
             
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userToken', response.token); 
-            localStorage.setItem('userRole', response.user.role);
+            localStorage.setItem('userRole', response.role);
 
             UI.showToast("Welcome back!", "success");
 
-            if (response.user.role === 'admin') {
+            if (response.role === 'admin') {
                 window.location.href = 'admin.html';
             } else {
                 window.location.href = 'dashboard.html';
