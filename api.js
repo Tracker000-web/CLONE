@@ -111,6 +111,23 @@ export const api = {
         });
     },
 
+   // Inside api.js
+    async register(userData) {
+    const response = await fetch('http://127.0.0.1:5000/api/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+    }
+    return data;
+    },
+
     async saveCell(managerId, row, col, value, role, isSyncing = false) {
         if (!navigator.onLine && !isSyncing) {
             state.addToSyncQueue({ managerId, row, col, value, role });

@@ -193,3 +193,32 @@ def forgot_password():
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
+
+# Add this route to app.py
+@app.route("/api/register", methods=["POST"])
+def register():
+    data = request.json
+    email = data.get("email")
+    username = data.get("username")
+    password = data.get("password")
+
+    # Basic Validation
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    if email in USERS:
+        return jsonify({"error": "User already exists"}), 400
+
+    # Add the new user
+    USERS[email] = {
+        "id": len(USERS) + 1,
+        "username": username or "New User",
+        "password": password,
+        "role": "user",  # Default new signups to 'user' role
+        "profilePic": None
+    }
+
+    # Save to users.json permanently
+    save_data(USER_FILE, USERS)
+
+    return jsonify({"message": "Registration successful"}), 201    

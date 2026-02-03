@@ -231,6 +231,20 @@ input:focus {
 
 .signup-text { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; }
 
+/* Ensure the wrapper centers the active form properly */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Ensure hidden forms occupy NO space */
+#login-section[style*="display: none"],
+#signup-section[style*="display: none"] {
+    display: none !important;
+}
+
 /* Dark background overlay */
 .custom-modal {
     position: fixed;

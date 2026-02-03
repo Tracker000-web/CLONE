@@ -14,118 +14,112 @@ document.addEventListener("DOMContentLoaded", async () => {
     const isLoginPage = window.location.pathname.includes('index.html') || window.location.pathname === '/';
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
-    // 2. ATTACH LOGIN FORM LISTENER (Must be before any returns!)
+    // 2. ATTACH FORM LISTENERS
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
-        console.log("Login form detected, attaching listener...");
         loginForm.onsubmit = async (e) => {
             e.preventDefault();
-            
             const email = document.getElementById('email').value;
             const pass = document.getElementById('login-password').value;
             const remember = document.getElementById('rememberMe')?.checked;
             
-            console.log("Sign In clicked for:", email);
-
             try {
-                // Ensure Auth.handleLogin exists and call it
                 if (Auth && typeof Auth.handleLogin === 'function') {
                     await Auth.handleLogin(email, pass, remember);
-                } else {
-                    console.error("Auth.handleLogin is not defined! Check your auth.js exports.");
                 }
             } catch (err) {
                 console.error("Login Error:", err);
-                alert("Login failed. Check console for details.");
+                alert("Login failed.");
             }
         };
-    
+    }
+
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const userData = {
+                username: document.getElementById('reg-name-input').value,
+                email: document.getElementById('reg-email-input').value,
+                password: document.getElementById('reg-password-input').value
+            };
+            try {
+                // This calls your API register route
+                await api.register(userData); 
+                alert("Account created successfully! Please Sign In.");
+                window.toggleAuth('login');
+            } catch (err) {
+                alert("Signup failed: " + err.message);
+            }
+        };
+    }
+
+    // 3. LOGOUT BUTTON LISTENER
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
-        console.log("Logout button detected, attaching listener...");
         logoutBtn.onclick = () => {
             if (Auth && typeof Auth.logout === 'function') {
                 Auth.logout();
-            } else {
-                console.error("Auth.logout is not defined! Check your auth.js exports.");
             }
         };
     }
-    }
 
-    // 3. SECURITY GATEKEEPING
+    // 4. SECURITY GATEKEEPING
     if (!isLoggedIn && !isLoginPage) {
-        console.log("Unauthorized access. Redirecting to login...");
         window.location.href = 'index.html';
         return;
     }
 
     if (isLoginPage && !isLoggedIn) {
-        console.log("Ready for user login.");
-
-        // We must show the form BEFORE we stop the script
-        if (typeof window.showLogin === 'function') {
-            window.showLogin(); 
-        }
-
-        return; // Stops here to wait for user input
+        if (typeof window.showLogin === 'function') window.showLogin(); 
+        return; 
     }
 
-    // 4. SESSION CHECK (Only for active sessions)
+    // 5. SESSION CHECK
     try {
         state.currentUser = await api.checkSession();
         state.isLoggedIn = true;
-
-        // 1. Show the dashboard/app UI
-        if (typeof window.showApp === 'function') {
-            window.showApp();
-        }
-
-        // 2. Hide/Show buttons based on if they are an admin or user
+        if (typeof window.showApp === 'function') window.showApp();
         updateUIForRole();
-
     } catch (err) {
-        console.warn("Session expired or backend offline.");
-
-        // 3. Fix the blank screen: force the login form to show if session fails
-        if (typeof window.showLogin === 'function') {
-            window.showLogin();
-        }
-
-        // 4. Only kick them to index.html if they are currently on a dashboard page
+        if (typeof window.showLogin === 'function') window.showLogin();
         if (!isLoginPage) {
             localStorage.setItem('isLoggedIn', 'false');
             window.location.href = 'index.html';
         }
     }
 
-    // 5. OTHER UI INITIALIZATION
     if (state.settings?.theme) applyTheme(state.settings.theme);
-    
-    // Add logic for logout button if it exists
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-        logoutBtn.onclick = () => Auth.logout();
-    }
 });
 
-// --- HELPER FUNCTIONS ---
+// --- GLOBAL HELPERS (Accessible by HTML) ---
+window.toggleAuth = function(mode) {
+    const loginSec = document.getElementById('login-section');
+    const signupSec = document.getElementById('signup-section');
+    const forgotMod = document.getElementById('forgot-modal');
+
+    if (loginSec) loginSec.style.display = 'none';
+    if (signupSec) signupSec.style.display = 'none';
+    if (forgotMod) forgotMod.style.display = 'none';
+
+    if (mode === 'login') {
+        loginSec.style.display = 'block';
+    } else if (mode === 'signup') {
+        signupSec.style.display = 'block';
+    } else if (mode === 'forgot') {
+        loginSec.style.display = 'block';
+        forgotMod.style.display = 'flex';
+    }
+};
+
 function applyTheme(theme) {
     document.body.className = `theme-${theme}`;
 }
 
 function updateUIForRole() {
-    // app.py returns 'role' directly in the user object
     const userRole = state.currentUser?.role; 
     const isAdmin = userRole === 'admin';
-    
     document.querySelectorAll('.admin-only').forEach(el => {
         el.style.setProperty('display', isAdmin ? 'block' : 'none', 'important');
     });
-}
-
-export async function fetchData(endpoint) {
-    const response = await fetch(`http://127.0.0.1:5000/api/${endpoint}`);
-    if (!response.ok) throw new Error("Data fetch failed");
-    return await response.json();
 }
