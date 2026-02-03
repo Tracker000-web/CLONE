@@ -84,6 +84,22 @@ body {
   margin: 20px 0;
 }
 
+.btn-logout {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    transition: background 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: #c0392b;
+}
+
 /* --- MAIN CONTENT AREA --- */
 .main-content {
   flex: 1;

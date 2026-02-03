@@ -39,6 +39,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Login failed. Check console for details.");
             }
         };
+    
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+        console.log("Logout button detected, attaching listener...");
+        logoutBtn.onclick = () => {
+            if (Auth && typeof Auth.logout === 'function') {
+                Auth.logout();
+            } else {
+                console.error("Auth.logout is not defined! Check your auth.js exports.");
+            }
+        };
+    }
     }
 
     // 3. SECURITY GATEKEEPING
