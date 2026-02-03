@@ -22,6 +22,18 @@ export const Auth = {
         } catch (err) {
             UI.showToast(err.message, "error");
         }
+    },
+    
+        logout() {
+        console.log("Logging out user...");
+        
+        // 1. Clear all credentials from storage
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userRole');
+        
+        // 2. Send them back to the login screen
+        window.location.href = 'index.html';
     }
 }; // <--- THIS BRACE CLOSES THE AUTH OBJECT
 

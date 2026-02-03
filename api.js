@@ -83,11 +83,6 @@ export const api = {
 
     async checkSession() {
         
-
-
-
-
-
         const data = await authenticatedFetch('/api/me');
 
         if (!data.profilePic) {

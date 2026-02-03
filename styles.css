@@ -28,6 +28,17 @@ body::before {
     z-index: 0;
 }
 
+#login-section {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Ensure the app content is hidden until login */
+#app-section {
+    display: none;
+}
+
 .login-container, .content, .side-menu {
     position: relative;
     z-index: 10; 

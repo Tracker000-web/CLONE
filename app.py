@@ -2,14 +2,37 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from functools import wraps
 import secrets
+import json
+import os
 
 app = Flask(__name__)
 CORS(app)
 
 # --------------------------------------------------
-# FAKE USER STORE (replace with DB later)
+# PERSISTENCE HELPERS (File Handling)
 # --------------------------------------------------
-USERS = {
+TOKEN_FILE = "tokens.json"
+USER_FILE = "users.json"
+
+def load_data(filename, default_data):
+    """Loads data from a JSON file or returns default if file doesn't exist."""
+    if os.path.exists(filename):
+        with open(filename, "r") as f:
+            try:
+                return json.load(f)
+            except:
+                return default_data
+    return default_data
+
+def save_data(filename, data):
+    """Saves a dictionary to a JSON file."""
+    with open(filename, "w") as f:
+        json.dump(data, f, indent=4)
+
+# --------------------------------------------------
+# DATA INITIALIZATION
+# --------------------------------------------------
+DEFAULT_USERS = {
     "admin@test.com": {
         "id": 1,
         "username": "admin",
@@ -26,8 +49,9 @@ USERS = {
     }
 }
 
-# Simple token store (for now)
-TOKENS = {}
+# Load existing data from files or use defaults
+USERS = load_data(USER_FILE, DEFAULT_USERS)
+TOKENS = load_data(TOKEN_FILE, {})
 
 # --------------------------------------------------
 # AUTH DECORATOR
@@ -36,18 +60,16 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.headers.get("Authorization")
-
         if not auth or not auth.startswith("Bearer "):
             return jsonify({"message": "Unauthorized"}), 401
 
         token = auth.split(" ")[1]
-
         if token not in TOKENS:
             return jsonify({"message": "Invalid token"}), 401
 
+        # Retrieve user from the stored token mapping
         request.current_user = TOKENS[token]
         return f(*args, **kwargs)
-
     return decorated
 
 # --------------------------------------------------
@@ -65,7 +87,10 @@ def login():
         return jsonify({"message": "Invalid credentials"}), 401
 
     token = secrets.token_urlsafe(32)
+    
+    # Store token in memory and save to file for persistence
     TOKENS[token] = user
+    save_data(TOKEN_FILE, TOKENS)
 
     return jsonify({
         "token": token,
@@ -74,7 +99,7 @@ def login():
     })
 
 # --------------------------------------------------
-# SESSION CHECK (api.js -> checkSession)
+# SESSION CHECK
 # --------------------------------------------------
 @app.route("/api/me", methods=["GET"])
 @token_required
@@ -94,7 +119,6 @@ def api_me():
 @token_required
 def add_user():
     current = request.current_user
-
     if current["role"] != "admin":
         return jsonify({"error": "Forbidden"}), 403
 
@@ -104,6 +128,7 @@ def add_user():
     if email in USERS:
         return jsonify({"error": "User already exists"}), 400
 
+    # Add new user to dictionary
     USERS[email] = {
         "id": len(USERS) + 1,
         "username": data.get("username", "user"),
@@ -111,6 +136,9 @@ def add_user():
         "role": "user",
         "profilePic": None
     }
+    
+    # Permanently save new user to file
+    save_data(USER_FILE, USERS)
 
     return jsonify({"message": "User added"}), 201
 
@@ -129,6 +157,9 @@ def update_profile():
     if "profilePic" in data:
         user["profilePic"] = data["profilePic"]
 
+    # Save changes to the profile permanently
+    save_data(USER_FILE, USERS)
+
     return jsonify({
         "message": "Profile updated",
         "profilePic": user["profilePic"]
@@ -141,7 +172,6 @@ def update_profile():
 @token_required
 def save_cell():
     role = request.headers.get("X-Role")
-
     if role != "admin":
         return jsonify({"error": "Forbidden"}), 403
 
@@ -161,8 +191,5 @@ def forgot_password():
 
     return jsonify({"message": "Reset link generated"}), 200
 
-# --------------------------------------------------
-# RUN SERVER (ONCE)
-# --------------------------------------------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(port=5000, debug=True)

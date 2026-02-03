@@ -50,6 +50,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (isLoginPage && !isLoggedIn) {
         console.log("Ready for user login.");
+
+        // We must show the form BEFORE we stop the script
+        if (typeof window.showLogin === 'function') {
+            window.showLogin(); 
+        }
+
         return; // Stops here to wait for user input
     }
 
@@ -58,14 +64,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         state.currentUser = await api.checkSession();
         state.isLoggedIn = true;
 
-        if (typeof window.showApp === 'function') window.showApp();
-        
+        // 1. Show the dashboard/app UI
+        if (typeof window.showApp === 'function') {
+            window.showApp();
+        }
+
+        // 2. Hide/Show buttons based on if they are an admin or user
         updateUIForRole();
 
     } catch (err) {
-
         console.warn("Session expired or backend offline.");
 
+        // 3. Fix the blank screen: force the login form to show if session fails
+        if (typeof window.showLogin === 'function') {
+            window.showLogin();
+        }
+
+        // 4. Only kick them to index.html if they are currently on a dashboard page
         if (!isLoginPage) {
             localStorage.setItem('isLoggedIn', 'false');
             window.location.href = 'index.html';
