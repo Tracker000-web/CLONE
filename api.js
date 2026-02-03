@@ -17,6 +17,7 @@ export async function authenticatedFetch(endpoint, options = {}) {
         : `${BASE_URL}${endpoint}`;
 
     const headers = {
+        'Accept': 'application/json',
     ...(options.body && { 'Content-Type': 'application/json' }),
     ...options.headers
     };
@@ -40,9 +41,8 @@ export async function authenticatedFetch(endpoint, options = {}) {
 
     // Handle unauthorized globally
     if (response.status === 401) {
-        localStorage.clear();
-        window.location.href = 'index.html';
-        return new Promise(() => {});
+
+        throw { status: 401, message: "Unauthorized/Session Expired" };
     }
 
     // Detect non-JSON responses (e.g., HTML error pages)
@@ -83,6 +83,11 @@ export const api = {
 
     async checkSession() {
         
+
+
+
+
+
         const data = await authenticatedFetch('/api/me');
 
         if (!data.profilePic) {

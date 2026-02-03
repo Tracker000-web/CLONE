@@ -57,10 +57,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         state.currentUser = await api.checkSession();
         state.isLoggedIn = true;
-        window.showApp();
-        if (navigator.onLine) api.processSyncQueue();
+
+        if (typeof window.showApp === 'function') window.showApp();
+        
+        updateUIForRole();
+
     } catch (err) {
+
         console.warn("Session expired or backend offline.");
+
         if (!isLoginPage) {
             localStorage.setItem('isLoggedIn', 'false');
             window.location.href = 'index.html';
@@ -80,6 +85,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 // --- HELPER FUNCTIONS ---
 function applyTheme(theme) {
     document.body.className = `theme-${theme}`;
+}
+
+function updateUIForRole() {
+    // app.py returns 'role' directly in the user object
+    const userRole = state.currentUser?.role; 
+    const isAdmin = userRole === 'admin';
+    
+    document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.setProperty('display', isAdmin ? 'block' : 'none', 'important');
+    });
 }
 
 export async function fetchData(endpoint) {
