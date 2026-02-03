@@ -33,7 +33,7 @@ export async function authenticatedFetch(endpoint, options = {}) {
             ...options,
             headers
         });
-    } catch (networkError) {
+         } catch (networkError) {
         // Server is down / unreachable
         throw new Error("Cannot reach server. Is the backend running?");
     }

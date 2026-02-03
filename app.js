@@ -10,14 +10,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     UI.updateConnectionStatus(navigator.onLine);
     
     // Safety check for login status
+    const isLoginPage = window.location.pathname.includes('index.html') || window.location.pathname === '/';
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    
+    if (!isLoggedIn && !isLoginPage) {
+        window.location.href = 'index.html';
+        return;
+    }
 
-    if (!isLoggedIn) {
-        // If we are not on index.html and not logged in, redirect
-        if (!window.location.pathname.includes('index.html')) {
-            window.location.href = 'index.html';
-            return;
-        }
+    if (isLoginPage && !isLoggedIn) {
+        return; // Stop the script here so it doesn't try to check the session
     }
 
     // Only attempt session check if server is expected to be up
@@ -26,11 +28,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         state.isLoggedIn = true;
         Auth.showApp();
         if (navigator.onLine) api.processSyncQueue();
+
     } catch (err) {
         console.warn("Session check failed. Backend might be offline.");
         // Only show login UI if elements exist on this page
-        if(typeof window.showLogin === 'function') {
-        window.showLogin();
+        if (isLoginPage || !hasSessionHint) {
+            window.showLogin();
+        }
     }
 
     // 2. INITIAL COMPONENT RENDER
@@ -94,7 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     
-
     // 5. DATA & ADMIN ACTIONS
     const addRowBtn = document.getElementById("addRowBtn");
     if (addRowBtn) {
@@ -122,7 +125,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     document.addEventListener('authChange', () => updateUIForRole());
-}}); // End of DOMContentLoaded
+}); // End of DOMContentLoaded
 
 // --- HELPER FUNCTIONS ---
 function updateUIForRole() {
