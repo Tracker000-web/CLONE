@@ -71,16 +71,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (isLoginPage && !isLoggedIn) {
-        if (typeof window.showLogin === 'function') window.showLogin(); 
+        window.toggleAuth('login'); 
         return; 
     }
-
     // 5. SESSION CHECK
     try {
         state.currentUser = await api.checkSession();
         state.isLoggedIn = true;
-        if (typeof window.showApp === 'function') window.showApp();
-        updateUIForRole();
+       // if (typeof window.showApp === 'function') window.showApp();
+       // updateUIForRole();
+
     } catch (err) {
         if (typeof window.showLogin === 'function') window.showLogin();
         if (!isLoginPage) {

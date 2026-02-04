@@ -1,0 +1,30 @@
+{
+    "admin@test.com": {
+        "id": 1,
+        "username": "admin",
+        "password": "admin123",
+        "role": "admin",
+        "profilePic": null
+    },
+    "user@test.com": {
+        "id": 2,
+        "username": "user",
+        "password": "user123",
+        "role": "user",
+        "profilePic": null
+    },
+    "usertesting@gmail.com": {
+        "id": 3,
+        "username": "User Test",
+        "password": "user123",
+        "role": "user",
+        "profilePic": null
+    },
+    "newagent@test.com": {
+        "id": 4,
+        "username": "New Agent",
+        "password": "yourpassword123",
+        "role": "user",
+        "profilePic": null
+    }
+}

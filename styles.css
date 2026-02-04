@@ -59,7 +59,7 @@ body::before {
     z-index: 10;
 }
 
-#signup-section {
+#signup-section, #app-section {
   display: none;
 }
 
@@ -193,6 +193,16 @@ input:focus {
   text-decoration: underline;
 }
 
+.login-button:hover { background-color: #333; }
+
+#login-section, #signup-section, #app-section {
+    position: absolute;
+}
+
+#login-section {
+    display: block;
+}
+
 .login-button {
   width: 100%;
   padding: 0.75rem;
@@ -205,9 +215,6 @@ input:focus {
   transition: background 0.3s ease;
 }
 
-.login-button:hover { background-color: #333; }
-
-
 .forgot-link, .signup-text a {
   color: #4A90E2;
   text-decoration: none;
@@ -215,11 +222,6 @@ input:focus {
 }
 
 .signup-text { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; }
-
-/* Force hidden sections to actually stay hidden */
-#login-section, #signup-section, #app-section {
-    display: none;
-}
 
 /* Ensure the wrapper centers the active form properly */
 .auth-wrapper {

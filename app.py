@@ -191,9 +191,6 @@ def forgot_password():
 
     return jsonify({"message": "Reset link generated"}), 200
 
-if __name__ == "__main__":
-    app.run(port=5000, debug=True)
-
 # Add this route to app.py
 @app.route("/api/register", methods=["POST"])
 def register():
@@ -222,3 +219,7 @@ def register():
     save_data(USER_FILE, USERS)
 
     return jsonify({"message": "Registration successful"}), 201    
+
+if __name__ == "__main__":
+    app.run(port=5000, debug=True)
+
