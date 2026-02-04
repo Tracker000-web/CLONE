@@ -9,8 +9,18 @@ const ASSETS_TO_CACHE = [
     './api.js',
     './auth.js',
     './spreadsheet.js',
-    './ui.js'
+    './manifest.json',
+    './ui.js',
+    './4840719.jpg'
 ];
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE)));
+});
+
+self.addEventListener('fetch', (e) => {
+  e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+});
 
 // 1. Install - Caches the files
 self.addEventListener('install', (event) => {
