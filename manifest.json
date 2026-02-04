@@ -1,20 +1,21 @@
 {
   "id": "/index.html",
   "name": "Activity Tracker",
-  "short_name": "ManagerLog",
+  "short_name": "Tracker",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#121212",
-  "theme_color": "#1e1e2f",
+  "background_color": "#121212", 
+  "theme_color": "#121212",
   "description": "A professional activity log for managers and agents.",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/128/1087/1087103.png",
-      "sizes": "128x128",
-      "type": "image/png"
+      "src": "logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1087/1087103.png",
+      "src": "logo-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

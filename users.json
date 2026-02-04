@@ -26,5 +26,19 @@
         "password": "yourpassword123",
         "role": "user",
         "profilePic": null
+    },
+    "testone@test.com": {
+        "id": 5,
+        "username": "Test one",
+        "password": "test123",
+        "role": "user",
+        "profilePic": null
+    },
+    "tester@example.com": {
+        "id": 6,
+        "username": "TestBot_Updated",
+        "password": "password123",
+        "role": "user",
+        "profilePic": null
     }
 }

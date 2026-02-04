@@ -12,6 +12,13 @@ export const Auth = {
             localStorage.setItem('userToken', response.token); 
             localStorage.setItem('userRole', response.role);
 
+            if (rememberMe) {
+                localStorage.setItem('rememberedEmail', email);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+            }
+    
+
             UI.showToast("Welcome back!", "success");
 
             if (response.role === 'admin') {
@@ -90,6 +97,21 @@ window.toggleAuth = toggleAuth;
 
 // Initialize view: Show login by default on first load
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('login-section').style.display = 'block';
-    document.getElementById('signup-section').style.display = 'none';
+    const loginSection = document.getElementById('login-section');
+    const signupSection = document.getElementById('signup-section');
+    
+    // Set initial view
+    if (loginSection) loginSection.style.display = 'block';
+    if (signupSection) signupSection.style.display = 'none';
+
+    // --- AUTO-FILL REMEMBERED EMAIL ---
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    const emailInput = document.getElementById('email');
+    const rememberCheckbox = document.getElementById('rememberMe');
+
+    if (savedEmail && emailInput) {
+        emailInput.value = savedEmail;
+        if (rememberCheckbox) rememberCheckbox.checked = true;
+    }
+    // ----------------------------------
 });

@@ -52,7 +52,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Signup failed: " + err.message);
             }
         };
+
     }
+
+    // PASSWORD VISIBILITY TOGGLE
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#login-password');
+
+    togglePassword.addEventListener('click', function () {
+        // Toggle the type attribute
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        
+        // Toggle the eye icon class (requires Font Awesome)
+        this.classList.toggle('fa-eye-slash');
+    });
 
     // 3. LOGOUT BUTTON LISTENER
     const logoutBtn = document.getElementById("logoutBtn");
@@ -90,6 +104,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (state.settings?.theme) applyTheme(state.settings.theme);
+
+
+    window.addEventListener('load', () => {
+    const splash = document.getElementById('splash-screen');
+    const authWrapper = document.querySelector('.auth-wrapper');
+    
+    // Small delay so the user actually sees the branding
+    setTimeout(() => {
+        splash.style.opacity = '0';
+        splash.style.visibility = 'hidden';
+
+        if (authWrapper) {
+        authWrapper.classList.add('visible');
+        }
+    }, 1500); 
+});
+
+
 });
 
 window.showLogin = function() {
