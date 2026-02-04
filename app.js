@@ -92,6 +92,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (state.settings?.theme) applyTheme(state.settings.theme);
 });
 
+window.showLogin = function() {
+    window.toggleAuth('login');
+};
+
+window.showApp = function() {
+    const loginSec = document.getElementById('login-section');
+    const signupSec = document.getElementById('signup-section');
+    const appSec = document.getElementById('app-section');
+
+    if (loginSec) loginSec.style.display = 'none';
+    if (signupSec) signupSec.style.display = 'none';
+    if (appSec) appSec.style.display = 'block';
+};
+
+
 // --- GLOBAL HELPERS (Accessible by HTML) ---
 window.toggleAuth = function(mode) {
     const loginSec = document.getElementById('login-section');

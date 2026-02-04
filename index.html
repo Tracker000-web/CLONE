@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tracker</title>
+
+  <link id="favicon" rel="icon" href="data:image/svg+xml,
+   <svg xmlns='http://www.w3.org/2000/svg'viewBox='0 0 24 24'>
+    <rect x='3' y='3' width='7' height='7' fill='white'></rect>
+    <rect x='14' y='3' width='7' height='7' fill='white'></rect>
+    <rect x='14' y='14' width='7' height='7' fill='white'></rect>
+    <rect x='3' y='14' width='7' height='7' fill='white'></rect>
+    </svg>">
+
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="data:,">
 </head>
@@ -33,7 +42,7 @@
 
         <button type="submit" class="login-button">Sign In</button>
         <p class="signup-text">
-          Don't have an account? <a href="javascript:void(0)" id="show-signup" onclick="toggleAuth('signup')">Sign up for free</a>
+          Don't have an account? <a href="#" onclick="toggleAuth('signup')">Sign up for free</a>
         </p>
       </form>
     </div>
@@ -58,7 +67,7 @@
 
         <button type="submit" class="login-button">Create Account</button>
         <p class="signup-text">
-          Already have an account? <a href="javascript:void(0)" id="show-login" onclick="toggleAuth('login')">Sign In</a>
+          Already have an account? <a href="#" onclick="toggleAuth('login')">Sign In</a>
         </p>
       </form>
     </div>

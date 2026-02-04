@@ -15,7 +15,6 @@ async function handleLogin(e) {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-
     try {
         const data = await authenticatedFetch('/api/login', {
             method: 'POST',

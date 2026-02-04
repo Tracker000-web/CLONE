@@ -67,3 +67,29 @@ window.toggleAuth = (view) => {
     if (signup) signup.style.display = view === 'signup' ? 'block' : 'none';
     if (forgot) forgot.style.display = view === 'forgot' ? 'flex' : 'none';
 };
+
+/**
+ * Toggles between Login and Signup forms
+ */
+function toggleAuth() {
+    const loginSection = document.getElementById('login-section');
+    const signupSection = document.getElementById('signup-section');
+
+    // If login is currently hidden or not set, show login and hide signup
+    if (loginSection.style.display === 'none' || !loginSection.style.display) {
+        loginSection.style.display = 'block';
+        signupSection.style.display = 'none';
+    } else {
+        loginSection.style.display = 'none';
+        signupSection.style.display = 'block';
+    }
+}
+
+// Attach to window so the HTML onclick="toggleAuth()" can find it
+window.toggleAuth = toggleAuth;
+
+// Initialize view: Show login by default on first load
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('login-section').style.display = 'block';
+    document.getElementById('signup-section').style.display = 'none';
+});
