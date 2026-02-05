@@ -220,6 +220,7 @@ def register():
 
     return jsonify({"message": "Registration successful"}), 201    
 
+
 if __name__ == "__main__":
     app.run(port=5000, debug=True)
 

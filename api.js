@@ -78,7 +78,6 @@ export const api = {
         });
     },
 
-
     async checkSession() {
         const data = await authenticatedFetch('/api/me');
         if (!data.profilePic) {
@@ -106,17 +105,15 @@ export const api = {
 
     async addTracker(managerId, trackerData) {
         try {
-            const response = await fetch('/api/add-tracker', {
+            return authenticatedFetch('/api/add-tracker', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    manager_id: managerId,
-                    data: trackerData,
-                    timestamp: new Date().toISOString()
-                })
-            });
-            if (!response.ok) throw new Error('Failed to add tracker');
-            return await response.json();
+                manager_id: managerId,
+                data: trackerData,
+                timestamp: new Date().toISOString()
+            }),
+        });
+
         } catch (err) {
             console.error("API Error:", err);
             throw err;
@@ -152,5 +149,7 @@ export const api = {
             }
             throw err;
         }
-    }
-};
+    },
+}
+
+export const checkSession = api.checkSession;

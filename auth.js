@@ -3,6 +3,15 @@ import { api } from './api.js';
 import { state } from './state.js';
 import { UI } from './ui.js';
 
+export function checkAuth() {
+    return localStorage.getItem('isLoggedIn') === 'true';
+}
+
+export function logout() {
+    localStorage.clear();
+    window.location.href = 'index.html';
+}
+
 export const Auth = {
     async handleLogin(email, password, rememberMe) {
         try {

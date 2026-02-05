@@ -169,3 +169,87 @@ sidebar-header h2 {
   border-top: 1px solid #333;
   margin: 15px 0;
 }
+
+/* Container for the tiles */
+.tracker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* Individual Card Styling */
+.tracker-card {
+    background: rgba(255, 255, 255, 0.05); /* Subtle transparent white */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.2s ease, background 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 120px;
+    cursor: default;
+}
+
+.tracker-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+    border-color: #3498db; /* Blue accent color */
+}
+
+/* Card Content Styling */
+.card-content h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.card-content p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+/* Empty State Message */
+.empty-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #666;
+    padding: 40px;
+    font-style: italic;
+}
+
+.tracker-tabs-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Stacked tabs */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.tracker-tab {
+    background: #252525;
+    border-left: 4px solid #007bff; /* Blue accent */
+    padding: 15px 20px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tracker-tab:hover {
+    background: #333;
+}
+
+.tab-info strong { display: block; color: white; }
+.tab-info span { font-size: 0.85rem; color: #888; }
+.tab-status { 
+    font-size: 0.75rem; 
+    background: #1a4a1a; 
+    color: #4ade80; 
+    padding: 4px 8px; 
+    border-radius: 4px; 
+}

@@ -63,46 +63,19 @@
 
         <div class="sidebar-footer">
           <button id="settingsBtn">⚙</button>
+          <button id="installAppBtn" style="display: none;" class="menu-btn install-btn">INSTALL</button>
           <button id="logoutBtn" class="logout-btn">Logout</button>
         </div>
       </aside>
 
       <main class="main-content">
-        <header class="content-header">
-          <div class="title-area">
-            <h1 id="activeManager">Manager A</h1>
-           
-           
-            <p class="subtitle">METRICS</p>
-          </div>
-          <button id="appointmentBtn" class="appointment-btn">APPOINTMENTS</button>
-        
-        </header>
-        <div class="table-controls">
-          <button id="addRowBtn">+ ADD ROW</button>
-          <button id="addColBtn" class="admin-only">ADD COLUMN</button>
-        </div>
-        
-        <div id="sheetContainer" class="spreadsheet-view">
-          <table id="metricsTable">
-            <thead>
-              <tr>
-                <th width="50">#</th>
-                <th>PHONE NUMBERS</th>
-                <th>DISPOSITION</th>
-                <th>COMMENTS</th>
-              </tr>
-            </thead>
-            <tbody id="metricsBody"></tbody>
-          </table>
-        </div>
 
         <section id="trackersView" class="dashboard-view" style="display: none;">
+
           <div class="tracker-header">
             <h2>Trackers</h2>
             <button id="openTrackerModal" class="primary-btn">+ Add Tracker</button>
           </div>
-          <div id="trackerListContainer"></div>
 
           <div id="trackerListContainer" class="tracker-grid">
             <p class="empty-msg">No trackers added yet.</p>
@@ -111,33 +84,53 @@
 
         <div id="trackerModal" class="custom-modal" style="display: none;">
             <div class="modal-content">
-              <h3>Create New Tracker</h3>
               <div class="input-group">
-              <label>Manager:</label>
-            <input type="text" id="modalManager" placeholder="Enter Manager Name">
-        </div>
+                <label>MANAGER NAME</label>
+                <select id="modalManager">
+                  <option value="">Select Manager</option>
+                  </select>
+              </div>
 
-        <div class="input-group">
-            <label>Shift:</label>
-            <select id="modalShift">
-                <option value="Morning">Morning</option>
-                <option value="Afternoon">Afternoon</option>
-                <option value="Night">Night</option>
-            </select>
-        </div>
+              <div class="input-group">
+                <label>SHIFT</label>
+                <select id="modalShift">
+                  <option value="Preshift">Preshift</option>
+                  <option value="Morning">1st Shift</option>
+                  <option value="Afternoon">2nd Shift</option>
+                </select>
+              </div>
 
-        <div class="input-group">
-            <label>Date:</label>
-            <input type="date" id="modalDate">
-        </div>
+              <div class="input-group">
+                <label>Date:</label>
+                <input type="date" id="modalDate">
+              </div>
 
-        <div class="modal-buttons">
-            <button id="closeModalBtn" class="secondary-btn">Cancel</button>
-            <button id="saveTrackerBtn" class="save-btn">Save Tracker</button>
+              <div class="modal-buttons">
+                <button id="closeModalBtn" class="secondary-btn">Cancel</button>
+                <button id="saveTrackerBtn" class="save-btn">Save Tracker</button>
+              </div>
+
+        <section id="metricsView" class="dashboard-view">
+
+          <div class="table-controls">
+            <button id="addRowBtn">+ ADD ROW</button>
+            <button id="addColBtn" class="admin-only">ADD COLUMN</button>
           </div>
-        </div>
-
-        </div>
+  
+          <div id="sheetContainer" class="spreadsheet-view">
+            <table id="metricsTable">
+              <thead>
+              <tr>
+                <th width="50">#</th>
+                <th>PHONE NUMBERS</th>
+                <th>DISPOSITION</th>
+                <th>COMMENTS</th>
+              </tr>
+              </thead>
+              <tbody id="metricsBody"></tbody>
+            </table>
+          </div>
+        </section>
       
       </main>
     </div>
