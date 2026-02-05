@@ -64,32 +64,27 @@
         <button id="exportBtn" class="admin-only">Download CSV</button>
       </div>
     </header>
+
+    <section id="logsView" class="admin-view"></section>
     
-    <section id="trackersView" class="dashboard-section" style="display: none;">
-      <div class="admin-workspace">
-          <button id="expandAddBtn" class="primary-btn">
-              <i class="fas fa-plus"></i> Add New Manager Tracker
-          </button>
+    <section id="trackersView" class="admin-view" style="display: none;">
+        <div class="admin-workspace">
+            <button id="expandAddBtn" class="primary-btn">+ Add New Manager Tracker</button>
 
-          <div id="trackerExpansionPanel" class="expansion-panel">
-              <div class="editor-row">
-                  <input type="text" id="mgrNameInput" placeholder="Manager Name (e.g., Sarah J.)">
-                  <button id="openSheetBtn" class="icon-btn" title="Open Spreadsheet" type="button">
-                      <i class="fas fa-table"></i>
-                  </button>
-              </div>
+            <div id="trackerExpansionPanel" class="expansion-panel">
 
-              <div class="instruction-container">
-                  <label>Instructions:</label>
-                  <textarea id="mgrInstructionsInput" placeholder="Write specific daily tasks..."></textarea>
-              </div>
+                <div class="editor-row">
+                    <input type="text" id="mgrNameInput" placeholder="Manager Name">
+                    <button id="openSheetBtn" class="icon-btn"><i class="fas fa-table"></i></button>
+                </div>
 
-              <div class="editor-footer">
-                  <button id="cancelBtn" class="secondary-btn" type="button">Cancel</button>
-                  <button id="finalizeTrackerBtn" class="save-btn" type="button">Push to Users</button>
-              </div>
-          </div>
-      </div>
+                <textarea id="mgrInstructionsInput" placeholder="Manager Instructions..."></textarea>
+                  
+                <div class="editor-footer">
+                    <button id="finalizeTrackerBtn" class="save-btn">Push to Users</button>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section class="filters-container">
@@ -149,8 +144,7 @@
         <div id="spreadsheetContainer"></div>
     </div>
   </div>
-
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  
   <script type="module" src="admin.js"></script>
   <script type="module" src="main.js"></script>
 

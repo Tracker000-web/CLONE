@@ -125,8 +125,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 }); // End of DOMContentLoaded
 
-// --- GLOBAL HELPERS (Outside the DOMContentLoaded block) ---
 
+
+// -- GLOBAL HELPERS (Outside the DOMContentLoaded block) ---
 window.showLogin = function() {
     window.toggleAuth('login');
 };

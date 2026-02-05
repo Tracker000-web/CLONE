@@ -28,6 +28,7 @@ async function handleLogin(e) {
 
         // Redirect based on role
         if (data.role === "admin") {
+            console.log("Admin Access Granted.");
             window.location.href = 'admin.html';
         } else {
             window.location.href = 'dashboard.html';

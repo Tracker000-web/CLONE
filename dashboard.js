@@ -1,5 +1,5 @@
 // dashboard.js
-import { checkAuth } from './auth.js';
+import { checkAuth, logut } from './auth.js';
 import { State } from './state.js';
 import { authenticatedFetch } from './api.js';
 import { initSidebar, loadSidebarState } from './ui.js';
@@ -15,9 +15,14 @@ const menuBtn = document.getElementById("menuBtn");
 
 // Apply saved theme on load
 function applyTheme(theme) {
-    document.body.className = `theme-${theme}`;
+    document.body.className = `theme-${theme || 'dark'}`;
 }
 
+// 1. Immediate Security Check
+if (checkAuth()) {
+    console.log("User is authenticated. Loading dashboard...");
+    initDashboard();
+}
 
 // API Interaction Example
 export async function fetchData() {
@@ -82,8 +87,22 @@ if (logoutBtn) {
     logoutBtn.addEventListener('click', logout);
 }
 
-
 applyTheme(globalState.settings.theme);
+
+function setupViewSwitching() {
+    const trackersBtn = document.getElementById('trackersBtn');
+    const trackersView = document.getElementById('trackers-view');
+    const logsView = document.getElementById('logs-view');
+
+    if (trackersBtn && trackersView && logsView) {
+        trackersBtn.addEventListener('click', () => {
+            logsView.style.display = 'none';
+            trackersView.style.display = 'block';
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+            trackersBtn.classList.add('active');
+        });
+    }
+}
 
 // Save settings to localStorage
 function saveSettings() {
@@ -102,8 +121,8 @@ window.addEventListener('online', () => {
 });
 window.addEventListener('offline', () => {
     UI.updateConnectionStatus(false);
-}
-);
+});
+
 // Check menu button and side menu
 if (menuBtn && sideMenu && overlay) {
     menuBtn.onclick = () => { 
@@ -143,6 +162,47 @@ document.querySelectorAll(".themeBtn").forEach(btn => {
 document.addEventListener('DOMContentLoaded', () => {
     loadSidebarState(); // Set preferred state
     initSidebar();      // Enable clicking
+
+    const trackersBtn = document.getElementById('trackersBtn');
+    const logsBtn = document.getElementById('logsBtn'); // Add an ID to your Logs button too
+    const trackersView = document.getElementById('trackers-view');
+    const logsView = document.getElementById('logs-view');
+
+
+    // Default state: Show logs, hide trackers
+    // Define the switching function
+    function showView(viewToShow) {
+        // Hide all views first
+        if (logsView) logsView.style.display = 'none';
+        if (trackersView) trackersView.style.display = 'none';
+
+        // Show the requested view
+        if (viewToShow) viewToShow.style.display = 'block';
+    }
+
+    if (logsBtn) {
+        logsBtn.addEventListener('click', () => {
+            showView(logsView);
+            document.querySelectorAll('.primary-btn, .menu-btn').forEach(btn => btn.classList.remove('active'));
+            logsBtn.classList.add('active');
+            
+            console.log("Switched to Logs Dashboard");
+        });
+    }
+
+    if (trackersBtn) {
+        trackersBtn.addEventListener('click', () => {
+            // 1. Toggle visibility
+            if (logsView) logsView.style.display = 'none';
+            if (trackersView) trackersView.style.display = 'block';
+
+            // 2. Visual feedback (blue highlight)
+            document.querySelectorAll('.primary-btn, .menu-btn').forEach(btn => btn.classList.remove('active'));
+            trackersBtn.classList.add('active');
+            
+            console.log("Switched to Trackers Dashboard");
+        });
+    }
 });
 
 async function loadManagers() {

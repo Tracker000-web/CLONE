@@ -12,7 +12,7 @@ const currentUser = getUser();
 
 const role = localStorage.getItem('userRole');
 if (role !== 'admin') {
-    window.location.href = 'dashboard.html'; // Boot them to the user page
+    window.location.href = 'admin.html'; // Boot them to the user page
 }
 // Global state for logs to allow filtering without re-fetching
 let logs = []; 
@@ -77,10 +77,11 @@ function filterLogs() {
 }
 
 // Function for Admin to add a new manager
-async function addManager(name) {
+async function addManager(name, instructions) {
     const newManager = {
         name: name,
-        rows: [["", "", "Pending", ""]] // Initial template row
+        instructions: instructions, // Add this line
+        rows: [["", "", "Pending", ""]] 
     };
 
     try {
@@ -91,12 +92,11 @@ async function addManager(name) {
         });
 
         if (response.ok) {
-            alert("Manager Tracker Added successfully!");
-            // Refresh the list immediately if the admin is also looking at the sidebar
-            renderManagers(); 
+            alert("Tracker Sync Successful!");
+            location.reload(); // Refresh to update sidebar and grid
         }
     } catch (err) {
-        console.error("Failed to add manager to database:", err);
+        console.error("Failed to add manager:", err);
     }
 }
 
@@ -136,6 +136,83 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("phoneFilter").value = "";
             renderLogs(logs);
         });
+    }
+    
+    // --- NEW: VIEW SWITCHING LOGIC ---
+    const menuButtons = document.querySelectorAll('.menu-btn');
+    const trackersView = document.getElementById('trackersView');
+    const logsView = document.getElementById('logsView'); // Ensure your logs table is inside this ID
+    const viewTitle = document.getElementById('viewTitle');
+
+    menuButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const target = btn.getAttribute('data-target');
+
+            // Toggle active button style
+            menuButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Toggle Content Views
+            if (target === 'trackers') {
+                trackersView.style.display = 'block';
+                logsView.style.display = 'none';
+                viewTitle.innerText = "Manager Trackers";
+            } else if (target === 'logs') {
+                trackersView.style.display = 'none';
+                logsView.style.display = 'block';
+                viewTitle.innerText = "System Audit Logs";
+            }
+        });
+    });
+
+    // --- NEW: EXPANDING TRACKER PANEL ---
+    const expandAddBtn = document.getElementById('expandAddBtn');
+    const trackerExpansionPanel = document.getElementById('trackerExpansionPanel');
+    
+    if (expandAddBtn) {
+        expandAddBtn.onclick = () => {
+            trackerExpansionPanel.classList.toggle('active');
+            expandAddBtn.innerHTML = trackerExpansionPanel.classList.contains('active') 
+                ? "Close Editor" 
+                : "+ Add New Manager Tracker";
+        };
+    }
+
+    // --- NEW: SPREADSHEET MODAL ---
+    const sheetOverlay = document.getElementById('spreadsheetOverlay');
+    const openSheetBtn = document.getElementById('openSheetBtn');
+    const closeSheetBtn = document.getElementById('closeSheetBtn');
+
+    if (openSheetBtn) {
+        openSheetBtn.onclick = () => {
+            sheetOverlay.style.display = 'flex';
+            if (window.initSpreadsheet) window.initSpreadsheet(); 
+        };
+    }
+
+    if (closeSheetBtn) {
+        closeSheetBtn.onclick = () => {
+            sheetOverlay.style.display = 'none';
+        };
+    }
+
+    // --- NEW: FINALIZE & SYNC ---
+    const finalizeBtn = document.getElementById('finalizeTrackerBtn');
+    if (finalizeBtn) {
+        finalizeBtn.onclick = async () => {
+            const name = document.getElementById('mgrNameInput').value;
+            const instructions = document.getElementById('mgrInstructionsInput').value;
+
+            if (!name) return alert("Manager Name Required");
+
+            // Use your existing addManager function logic
+            await addManager(name, instructions); 
+        };
+    }
+    // --- NEW: USER INFO & LOGOUT ---
+    const userInfo = document.getElementById('userInfo');
+    if (userInfo) {
+        userInfo.innerText = `Logged in as: ${currentUser.name} (${currentUser.role})`;
     }
 
     // Logout Functionality
