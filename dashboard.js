@@ -172,6 +172,11 @@ async function loadManagers() {
     } catch (error) {
         console.error("Error loading managers:", error);
     }
+
+    setInterval(async () => {
+        const trackers = await api.getTrackers();
+        UI.renderTrackers(trackers);
+    }, 30000); // 30 seconds
 }
 
 // Call the function when the page loads

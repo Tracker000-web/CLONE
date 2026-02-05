@@ -40,5 +40,12 @@
         "password": "password123",
         "role": "user",
         "profilePic": null
+    },
+    "testtwo@test.com": {
+        "id": 7,
+        "username": "Test two",
+        "password": "test123",
+        "role": "user",
+        "profilePic": null
     }
 }

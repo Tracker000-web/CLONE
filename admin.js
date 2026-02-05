@@ -147,3 +147,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// Expand Logic
+document.getElementById('expandAddBtn').onclick = () => {
+    document.getElementById('trackerExpansionPanel').classList.add('active');
+};
+
+// Spreadsheet Toggle
+const sheetOverlay = document.getElementById('spreadsheetOverlay');
+document.getElementById('openSheetBtn').onclick = () => {
+    sheetOverlay.style.display = 'flex';
+    // Load your spreadsheet module logic
+    if (window.initSpreadsheet) window.initSpreadsheet(); 
+};
+
+document.getElementById('closeSheetBtn').onclick = () => {
+    sheetOverlay.style.display = 'none';
+};
+
+// Finalize and Sync to User
+document.getElementById('finalizeTrackerBtn').onclick = async () => {
+    const data = {
+        name: document.getElementById('mgrNameInput').value,
+        instructions: document.getElementById('mgrInstructionsInput').value,
+        createdAt: new Date().toISOString()
+    };
+
+    if (!data.name) return alert("Manager Name Required");
+
+    try {
+        await api.addTracker(data); // Sends to app.py/users.json
+        alert("Tracker Sync Successful!");
+        location.reload(); 
+    } catch (err) {
+        console.error("Sync Error:", err);
+    }
+};

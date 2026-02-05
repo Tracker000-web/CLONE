@@ -20,10 +20,10 @@
 </head>
 
 <body>
-<body>
 
   <aside class="side-menu">
     <div class="menu-header">
+
       <h1>Admin</h1>
       <nav class="top-nav-links">
         <a href="index.html">Dashboard</a> | <a href="admin.html">Logs</a>
@@ -54,6 +54,7 @@
     </div>
   </aside>
 
+  <!-- SIDE MENU BAR -->
   <main class="main-content">
     
     <header class="content-header">
@@ -63,6 +64,33 @@
         <button id="exportBtn" class="admin-only">Download CSV</button>
       </div>
     </header>
+    
+    <section id="trackersView" class="dashboard-section" style="display: none;">
+      <div class="admin-workspace">
+          <button id="expandAddBtn" class="primary-btn">
+              <i class="fas fa-plus"></i> Add New Manager Tracker
+          </button>
+
+          <div id="trackerExpansionPanel" class="expansion-panel">
+              <div class="editor-row">
+                  <input type="text" id="mgrNameInput" placeholder="Manager Name (e.g., Sarah J.)">
+                  <button id="openSheetBtn" class="icon-btn" title="Open Spreadsheet" type="button">
+                      <i class="fas fa-table"></i>
+                  </button>
+              </div>
+
+              <div class="instruction-container">
+                  <label>Instructions:</label>
+                  <textarea id="mgrInstructionsInput" placeholder="Write specific daily tasks..."></textarea>
+              </div>
+
+              <div class="editor-footer">
+                  <button id="cancelBtn" class="secondary-btn" type="button">Cancel</button>
+                  <button id="finalizeTrackerBtn" class="save-btn" type="button">Push to Users</button>
+              </div>
+          </div>
+      </div>
+    </section>
 
     <section class="filters-container">
       <div class="filter-group">
@@ -110,7 +138,19 @@
     </section>
 
   </main>
+  <!-- END OF SIDE MENU BAR -->
 
+  <div id="spreadsheetOverlay" class="sheet-modal">
+    <div class="sheet-content">
+        <div class="sheet-header">
+            <h4 id="activeSheetTitle">Manager Sheet</h4>
+            <button id="closeSheetBtn" type="button">&times;</button>
+        </div>
+        <div id="spreadsheetContainer"></div>
+    </div>
+  </div>
+
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
   <script type="module" src="admin.js"></script>
   <script type="module" src="main.js"></script>
 

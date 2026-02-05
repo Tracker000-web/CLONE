@@ -104,7 +104,24 @@ export const api = {
         });
     },
 
-   
+    async addTracker(managerId, trackerData) {
+        try {
+            const response = await fetch('/api/add-tracker', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    manager_id: managerId,
+                    data: trackerData,
+                    timestamp: new Date().toISOString()
+                })
+            });
+            if (!response.ok) throw new Error('Failed to add tracker');
+            return await response.json();
+        } catch (err) {
+            console.error("API Error:", err);
+            throw err;
+        }
+    },
 
     async saveCell(managerId, row, col, value, role, isSyncing = false) {
         if (!navigator.onLine && !isSyncing) {

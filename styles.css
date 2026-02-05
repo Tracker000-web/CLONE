@@ -806,3 +806,30 @@ body.theme-reader { background-color: #fdf6e3; color: #586e75; font-family: seri
     fill: currentColor;  /* Matches the surrounding text color automatically */
 }
 
+/* Sidebar item styling */
+.manager-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.manager-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.manager-info span {
+    display: block;
+    font-weight: 500;
+    color: #fff;
+}
+
+.manager-info small {
+    color: #888;
+    font-size: 0.75rem;
+}

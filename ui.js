@@ -20,7 +20,7 @@ export const UI = {
         setTimeout(() => {
             toast.classList.add('fade-out');
             toast.ontransitionend = () => toast.remove();
-        }, 5000
+        },  5000
     );
     },
 
@@ -43,7 +43,7 @@ export const UI = {
     // 3. Image Processing (Base64)
     async handleImageUpload(file) {
         // Validation: Limit to 2MB to keep MySQL LONGTEXT performance snappy
-        const MAX_SIZE = 2 * 1024 * 1024; 
+        const MAX_SIZE = 2 * 1024 * 1024;
         if (file.size > MAX_SIZE) {
             this.showToast("File too large! Max 2MB allowed.", "error");
             throw new Error("File size limit exceeded");
@@ -55,7 +55,7 @@ export const UI = {
             reader.onerror = (err) => reject(err);
             reader.readAsDataURL(file);
         });
-    }
+    },
 };
 
 export function initSidebar() {
@@ -71,6 +71,38 @@ export function initSidebar() {
             localStorage.setItem('sidebarState', isCollapsed ? 'closed' : 'open');
         });
     }
+}
+
+export function updateSidebarTrackers(managers) {
+    const listContainer = document.getElementById('managerList');
+    if (!listContainer) return;
+
+    // 1. Clear current list to prevent duplicates
+    listContainer.innerHTML = '';
+
+    // 2. Loop through managers and create the menu items
+    managers.forEach(manager => {
+        const div = document.createElement('div');
+        div.className = 'manager-item'; // Uses your sidebar styling
+        div.setAttribute('data-id', manager.id);
+        
+        div.innerHTML = `
+            <div class="manager-info">
+                <span>${manager.name}</span>
+                <small>${manager.role || 'Tracker'}</small>
+            </div>
+            <div class="status-dot ${manager.online ? 'online' : 'offline'}"></div>
+        `;
+
+        // 3. Add click listener to load this manager's specific data
+        div.onclick = () => {
+            console.log(`Loading data for: ${manager.name}`);
+            // Call your spreadsheet loading logic here
+            if (window.loadManagerMetrics) window.loadManagerMetrics(manager.id);
+        };
+
+        listContainer.appendChild(div);
+    });
 }
 
 // Check saved state on load
