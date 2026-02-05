@@ -5,9 +5,7 @@ import { UI } from './ui.js';
 const BASE_URL = "http://127.0.0.1:5000";
 const DEFAULT_AVATAR = "https://ui-avatars.com/api/?background=random&name=";
 
-/**
- * Centralized authenticated fetch
- */
+/*** Centralized authenticated fetch*/
 export async function authenticatedFetch(endpoint, options = {}) {
     const token = localStorage.getItem('userToken');
 
@@ -98,26 +96,20 @@ export const api = {
             method: 'POST',
             body: JSON.stringify(profileData),
             headers: {
-                'X-Role': state.currentUser?.role || 'team'
+                'X-Role': localStorage.getItem('userRole') || 'team'
             }
         });
     },
 
     async addTracker(managerId, trackerData) {
-        try {
-            return authenticatedFetch('/api/add-tracker', {
-                method: 'POST',
-                body: JSON.stringify({
-                manager_id: managerId,
-                data: trackerData,
-                timestamp: new Date().toISOString()
-            }),
-        });
-
-        } catch (err) {
-            console.error("API Error:", err);
-            throw err;
-        }
+    return authenticatedFetch('/api/add-tracker', {
+        method: 'POST',
+        body: JSON.stringify({
+            manager_id: managerId,
+            data: trackerData,
+            timestamp: new Date().toISOString()
+        })
+    });
     },
 
     async saveCell(managerId, row, col, value, role, isSyncing = false) {

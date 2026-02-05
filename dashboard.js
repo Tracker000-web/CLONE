@@ -25,7 +25,6 @@ const sideMenu = document.getElementById("sideMenu");
 const overlay = document.getElementById("overlay");
 const settingsBtn = document.getElementById("settingsBtn");
 const settingsPanel = document.getElementById("settingsPanel");
-const managerSearch = document.getElementById("managerSearch");
 const notifyToggle = document.getElementById("notifyToggle");
 const menuBtn = document.getElementById("menuBtn");
 
@@ -46,31 +45,85 @@ if (checkAuth()) {
     initDashboard();
 }
 
+if (managerSearch) {
+    managerSearch.oninput = () => renderManagers(managerSearch.value);
+}
+
 // Initializing Dashboard Logic
 export async function initDashboard() {
-  // 1. ATTACH LISTENERS FIRST (Ensures buttons work even if code below fails)
-    setupViewSwitchin;
+    setupViewSwitching();
 
    try {
         // 2. Load background data
         await api.checkSession();
-        loadDashboardStats().catch(err => console.warn("Stats server unreachable"));
-        loadManagers().catch(err => console.warn("Managers server unreachable"));
+        loadDashboardStats().catch(() =>
+            console.warn("Stats server unreachable")
+        );
+        loadManagers().catch(() =>
+            console.warn("Managers server unreachable")
+        );
     } 
     catch (error) {
-        console.error("Dashboard failed to initialize data, but UI is active:", error);
+        console.error(
+            "Dashboard failed to initialize data, but UI is active:",
+        error);
     }
-
 
     const role = localStorage.getItem('userRole');
         if (role !== 'admin') {
-        // Hide the link to the Admin Logs page
-        const adminLink = document.querySelector('a[href="admin.html"]');
-        if (adminLink) adminLink.style.display = 'none';
-    
-        // Hide any other admin-specific buttons (like "Add Column")
-    document.querySelectorAll('.admin-only').forEach(el => el.remove());
+            document.querySelectorAll('.admin-only')
+            .forEach(el => el.remove());
 }}
+
+async function loadManagers() {
+    try {
+        const managers = await api.authenticatedFetch('/api/managers'); 
+        const trackerList = document.getElementById('trackerManagersList');
+        if (!trackerList) return;
+
+        trackerList.innerHTML = '';
+
+        if (!managers.length) {
+            trackerList.innerHTML =
+              `<p class="empty-msg">No managers available.</p>`;
+            return;
+        }
+
+        managers.forEach(mgr => {
+            const btn = document.createElement('button');
+            btn.className = 'tracker-manager-btn';
+            btn.textContent = mgr.name;
+
+            btn.onclick = () => {
+                window.location.href =
+                  `tracker.html?managerId=${mgr.id}`;
+            };
+
+         trackerList.appendChild(btn);
+        });
+
+    } catch (err) {
+        console.error("Error loading managers:", err);
+    }
+}
+
+function renderManagers(managers) {
+    const container = document.getElementById('trackers-body');
+    container.innerHTML = '';
+
+    managers.forEach(manager => {
+        const div = document.createElement('div');
+        div.className = 'manager-card';
+        div.textContent = manager.name;
+        div.dataset.id = manager.id;
+
+        div.addEventListener('click', () => {
+            location.hash = `#/trackers/${manager.id}`;
+        });
+
+        container.appendChild(div);
+    });
+}
 
 async function loadDashboardStats() {
     try {
@@ -84,10 +137,8 @@ async function loadDashboardStats() {
 }
 
 // 3. Attach Logout Event
-const logoutBtn = document.getElementById('logout-button');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', logout);
-}
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
 applyTheme(globalState.settings.theme);
 
@@ -117,62 +168,6 @@ function setupViewSwitching() {
     });
 }
 
-function initTrackerLogic() {
-    const modal = document.getElementById('trackerModal');
-    const openBtn = document.getElementById('openTrackerModal') || document.getElementById('addTrackerBtn');
-    const closeBtn = document.getElementById('closeModalBtn');
-    const saveBtn = document.getElementById('saveTrackerBtn');
-    const trackerList = document.getElementById('trackerListContainer');
-    
-    if (openBtn && modal) {
-        openBtn.onclick = () => {
-            modal.style.display = 'flex';
-            console.log("Modal opened");
-        }
-    }
-
-    if (saveBtn) {
-        saveBtn.onclick = async () => {
-            const managerSelect = document.getElementById('modalManager');
-            const managerName = managerSelect.options[managerSelect.selectedIndex].text;
-            const shift = document.getElementById('modalShift').value;
-            const date = document.getElementById('modalDate').value;
-
-            if (!managerSelect.value || !date) return alert("Please fill everything!");
-
-            try {
-                // SYNC: Optional API call
-                // await api.addTracker({ managerName, shift, date });
-
-                // CREATE TAB
-                const tab = document.createElement('div');
-                tab.className = 'tracker-tab';
-                tab.innerHTML = `
-                    <div class="tab-info">
-                        <strong>${managerName}</strong>
-                        <span>${shift} | ${date}</span>
-                    </div>
-                    <div class="tab-status">Active</div>
-                `;
-
-                // Click the tab to open the spreadsheet
-                tab.onclick = () => openSpreadsheet(managerName);
-
-                trackerList.prepend(tab);
-
-                // HIDE FORM (Sudden disappearance)
-                modal.style.display = 'none';
-                
-                // RESET FORM
-                const emptyMsg = trackerList.querySelector('.empty-msg');
-                if (emptyMsg) emptyMsg.remove();
-                
-            } catch (err) {
-                console.error("Sync failed", err);
-            }
-        };
-    }
-}
 
 // Save settings to localStorage
 function saveSettings() {
@@ -188,7 +183,7 @@ if (savedSettings) {
 // --- SYNC QUEUE PROCESSING ---
 window.addEventListener('online', () => {
     UI.updateConnectionStatus(true);
-    API.processSyncQueue();
+    api.processSyncQueue();
 });
 window.addEventListener('offline', () => {
     UI.updateConnectionStatus(false);
@@ -232,54 +227,6 @@ document.querySelectorAll(".themeBtn").forEach(btn => {
         saveSettings();
     };
 });
-
-
-
-// Call the function when the page loads
-document.addEventListener('DOMContentLoaded', loadManagers);
-async function loadManagers() {
-    try {
-        // Fetch managers from your API
-        const managers = await api.authenticatedFetch('/api/managers'); 
-        const select = document.getElementById('modalManager');
-        const sideList = document.getElementById('managerList');
-
-        if (!select) return;
-
-        // Clear existing options except the first one
-        select.innerHTML = '<option value="">Select Manager</option>';
-
-        managers.forEach(mgr => {
-            // Populate Modal Dropdown
-            const opt = document.createElement('option');
-            opt.value = mgr.id;
-            opt.textContent = mgr.name;
-            select.appendChild(opt);
-
-            // Optional: Populate Sidebar list if needed
-            if (sideList) {
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.textContent = mgr.name;
-                sideList.appendChild(btn);
-            }
-        });
-    } catch (err) {
-        console.error("Error loading managers:", err);
-    }
-}
-
-function renderManagersToUI(managers) {
-    const select = document.getElementById('modalManager');
-    if (!select) return;
-    select.innerHTML = '<option value="">Select Manager</option>';
-    managers.forEach(mgr => {
-        const opt = document.createElement('option');
-        opt.value = mgr.id;
-        opt.textContent = mgr.name;
-        select.appendChild(opt);
-    });
-}
 
 document.getElementById('logoutBtn').addEventListener('click', logout);
 

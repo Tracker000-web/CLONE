@@ -6,7 +6,7 @@ import json
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, allow_headers=["Content-Type", "Authorization", "X-Role"])
 
 # --------------------------------------------------
 # PERSISTENCE HELPERS (File Handling)
