@@ -65,86 +65,91 @@
       </div>
     </header>
 
-    <section id="logsView" class="admin-view"></section>
+    <main class="main-content">
+    <header class="content-header">
+      <h2 id="viewTitle">System Audit Logs</h2>
+    </header>
     
-    <section id="trackersView" class="admin-view" style="display: none;">
-        <div class="admin-workspace">
-            <button id="expandAddBtn" class="primary-btn">+ Add New Manager Tracker</button>
-
-            <div id="trackerExpansionPanel" class="expansion-panel">
-
-                <div class="editor-row">
-                    <input type="text" id="mgrNameInput" placeholder="Manager Name">
-                    <button id="openSheetBtn" class="icon-btn"><i class="fas fa-table"></i></button>
-                </div>
-
-                <textarea id="mgrInstructionsInput" placeholder="Manager Instructions..."></textarea>
-                  
-                <div class="editor-footer">
-                    <button id="finalizeTrackerBtn" class="save-btn">Push to Users</button>
-                </div>
-            </div>
+    <!-- LOGS VIEW -->
+     <section id="logsView" class="admin-view">
+      <section class="filters-container">
+        <div class="filter-group">
+          <label>Role:</label>
+          <select id="roleFilter">
+            <option value="">All Roles</option>
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+          </select>
         </div>
+
+        <div class="filter-group">
+          <label>Disposition:</label>
+          <select id="dispositionFilter">
+            <option value="">All</option>
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
+            <option value="Failed">Failed</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Phone:</label>
+          <input type="text" id="phoneFilter" placeholder="Filter by phone...">
+        </div>
+
+        <button id="clearFilters">Clear Filters</button>
+      </section>
+
+      <section id="tableWrapper">
+        <table id="logsTable">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Role</th>
+              <th>Phone</th>
+              <th>Disposition</th>
+              <th>Edit History</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
     </section>
 
-    <section class="filters-container">
-      <div class="filter-group">
-        <label>Role:</label>
-        <select id="roleFilter">
-          <option value="">All Roles</option>
-          <option value="admin">Admin</option>
-          <option value="user">User</option>
-        </select>
-      </div>
+    <!-- TRACKERS VIEW -->
+    <section id="trackersView" class="admin-view" style="display:none;">
+      <div class="admin-workspace">
+        <h2>Manager Trackers</h2>
+        <button id="expandAddBtn" class="primary-btn">+ Add New Manager Tracker</button>
 
-      <div class="filter-group">
-        <label>Disposition:</label>
-        <select id="dispositionFilter">
-          <option value="">All</option>
-          <option value="Completed">Completed</option>
-          <option value="Pending">Pending</option>
-          <option value="Failed">Failed</option>
-        </select>
-      </div>
+        <div id="trackerExpansionPanel" class="expansion-panel">
+          <div class="editor-row">
+            <input type="text" id="mgrNameInput" placeholder="Manager Name">
+            <button id="openSheetBtn" class="icon-btn">Open Sheet</button>
+          </div>
+          <textarea id="mgrInstructionsInput" placeholder="Manager Instructions..."></textarea>
+          <div class="editor-footer">
+            <button id="finalizeTrackerBtn" class="save-btn">Push to Users</button>
+          </div>
+        </div>
 
-      <div class="filter-group">
-        <label>Phone:</label>
-        <input type="text" id="phoneFilter" placeholder="Filter by phone...">
+        <div id="trackers-body" class="trackers-body"></div>
       </div>
-
-      <button id="clearFilters">Clear Filters</button>
     </section>
-
-    <section id="tableWrapper">
-      <table id="logsTable">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Role</th>
-            <th>Phone</th>
-            <th>Disposition</th>
-            <th>Edit History</th>
-            <th>Timestamp</th>
-          </tr>
-        </thead>
-        <tbody>
-          </tbody>
-      </table>
-    </section>
-
   </main>
-  <!-- END OF SIDE MENU BAR -->
 
+  <!-- SPREADSHEET MODAL -->
   <div id="spreadsheetOverlay" class="sheet-modal">
     <div class="sheet-content">
-        <div class="sheet-header">
-            <h4 id="activeSheetTitle">Manager Sheet</h4>
-            <button id="closeSheetBtn" type="button">&times;</button>
-        </div>
-        <div id="spreadsheetContainer"></div>
+      <div class="sheet-header">
+        <h4 id="activeSheetTitle">Manager Sheet</h4>
+        <button id="closeSheetBtn">&times;</button>
+      </div>
+      <div id="spreadsheetContainer"></div>
     </div>
   </div>
-  
+
   <script type="module" src="admin.js"></script>
   <script type="module" src="main.js"></script>
 
