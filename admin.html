@@ -1,157 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tracker</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trackers</title>
 
-  <link id="favicon" rel="icon" href="data:image/svg+xml,
-  <svg xmlns='http://www.w3.org/2000/svg'viewBox='0 0 24 24'>
+<link rel="stylesheet" href="admin.css">
+
+ <link rel="icon" href="data:image/svg+xml,
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>
     <rect x='3' y='3' width='7' height='7' fill='white'></rect>
     <rect x='14' y='3' width='7' height='7' fill='white'></rect>
     <rect x='14' y='14' width='7' height='7' fill='white'></rect>
     <rect x='3' y='14' width='7' height='7' fill='white'></rect>
   </svg>">
   
-  <link rel="stylesheet" href="styles.css">
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="admin.css">
-  
 </head>
-
 <body>
 
-  <aside class="side-menu">
-    <div class="menu-header">
-
-      <h1>Admin</h1>
-      <nav class="top-nav-links">
-        <a href="index.html">Dashboard</a> | <a href="admin.html">Logs</a>
-      </nav>
-    </div>
-    
-    <div class="menu-items">
-      <button class="menu-btn" data-target="trackers">TRACKERS</button>
-      <button class="menu-btn" data-target="reports">REPORTS</button>
-      <button class="menu-btn" data-target="metrics">METRICS</button>
-      <button class="menu-btn" data-target="appointments">APPOINTMENTS</button>
-      <button class="menu-btn" data-target="bookers">BOOKERS</button>
-      <button class="menu-btn" data-target="history">HISTORY</button>
-      <button class="menu-btn active" data-target="logs">LOGS</button>
-    </div>
-
-    <hr class="nav-divider">
-
-    <div class="manager-section">
-      <h3>Managers</h3>
-      <button id="addManagerBtn" class="secondary-btn">+ Add Manager</button>
-      <input type="text" id="managerSearch" placeholder="Search managers..." />
-      <div id="managerList"></div>
-    </div>
-
-    <div class="sidebar-footer">
-    <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
-    </div>
-  </aside>
-
-  <!-- SIDE MENU BAR -->
-  <main class="main-content">
-    
-    <header class="content-header">
-      <h2 id="viewTitle">System Audit Logs</h2>
-      <div class="actions">
-        <button id="addColBtn">Add Column</button>
-        <button id="exportBtn" class="admin-only">Download CSV</button>
-      </div>
-    </header>
-
-    <main class="main-content">
-    <header class="content-header">
-      <h2 id="viewTitle">System Audit Logs</h2>
-    </header>
-    
-    <!-- LOGS VIEW -->
-     <section id="logsView" class="admin-view">
-      <section class="filters-container">
-        <div class="filter-group">
-          <label>Role:</label>
-          <select id="roleFilter">
-            <option value="">All Roles</option>
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label>Disposition:</label>
-          <select id="dispositionFilter">
-            <option value="">All</option>
-            <option value="Completed">Completed</option>
-            <option value="Pending">Pending</option>
-            <option value="Failed">Failed</option>
-          </select>
-        </div>
-
-        <div class="filter-group">
-          <label>Phone:</label>
-          <input type="text" id="phoneFilter" placeholder="Filter by phone...">
-        </div>
-
-        <button id="clearFilters">Clear Filters</button>
-      </section>
-
-      <section id="tableWrapper">
-        <table id="logsTable">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Role</th>
-              <th>Phone</th>
-              <th>Disposition</th>
-              <th>Edit History</th>
-              <th>Timestamp</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </section>
-    </section>
-
-    <!-- TRACKERS VIEW -->
-    <section id="trackersView" class="admin-view" style="display:none;">
-      <div class="admin-workspace">
-        <h2>Manager Trackers</h2>
-        <button id="expandAddBtn" class="primary-btn">+ Add New Manager Tracker</button>
-
-        <div id="trackerExpansionPanel" class="expansion-panel">
-          <div class="editor-row">
-            <input type="text" id="mgrNameInput" placeholder="Manager Name">
-            <button id="openSheetBtn" class="icon-btn">Open Sheet</button>
-          </div>
-          <textarea id="mgrInstructionsInput" placeholder="Manager Instructions..."></textarea>
-          <div class="editor-footer">
-            <button id="finalizeTrackerBtn" class="save-btn">Push to Users</button>
-          </div>
-        </div>
-
-        <div id="trackers-body" class="trackers-body"></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- SPREADSHEET MODAL -->
-  <div id="spreadsheetOverlay" class="sheet-modal">
-    <div class="sheet-content">
-      <div class="sheet-header">
-        <h4 id="activeSheetTitle">Manager Sheet</h4>
-        <button id="closeSheetBtn">&times;</button>
-      </div>
-      <div id="spreadsheetContainer"></div>
-    </div>
+<!-- SIDE MENU -->
+<aside class="side-menu collapsed">
+  
+  <div class="menu-header">
+    <button id="menuToggle" class="menu-toggle">☰</button>
+    <h1>Admin</h1>
+    <nav class="top-nav-links">
+      <a href="index.html">Dashboard</a> | <a href="admin.html">Logs</a>
+    </nav>
   </div>
 
-  <script type="module" src="admin.js"></script>
-  <script type="module" src="main.js"></script>
+  <div class="menu-items">
+    <button class="menu-btn" data-target="trackers">Trackers</button>
+    <button class="menu-btn active" data-target="logs">Logs</button>
+    <button class="menu-btn" data-target="reports">Reports</button>
+    <button class="menu-btn" data-target="metrics">Metrics</button>
+    <button class="menu-btn" data-target="appointments">Appointments</button>
+    <button class="menu-btn" data-target="bookers">Bookers</button>
+    <button class="menu-btn" data-target="history">History</button>
+    <button class="menu-btn" data-target="history">Practice</button>
+  </div>
 
+  <hr class="nav-divider">
+
+  <div class="sidebar-footer">
+    <button id="logoutBtn" class="btn-logout">Logout</button>
+  </div>
+</aside>
+
+<!-- TOOLBAR -->
+<div class="main-wrapper">
+  <header class="toolbar">
+    <div class="toolbar-left">
+      <input type="text" id="search" placeholder="Search..." autocomplete="off">
+    </div>
+
+    <div class="toolbar-right">
+      <!-- future icons / profile / actions -->
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content-container">
+
+  <!-- TRACKERS VIEW -->
+  <section id="trackersView" class="admin-view" style="display:none;">
+    <h2 id="viewTitle">Trackers</h2>
+
+    <div class="trackers-header">
+      <button id="expandAddBtn" class="secondary-btn">+ Add New Manager</button>
+      <input type="text" id="managerSearch" placeholder="Search managers..." class="manager-search">
+    </div>
+
+    <!-- TRACKER EXPANSION PANEL -->
+    <div id="trackerExpansionPanel" class="tracker-expansion" style="display:none;">
+      <div class="editor-row">
+        <div class="input-block">
+          <label>Manager Name</label>
+          <input type="text" id="mgrNameInput" placeholder="Enter full name...">
+        </div>
+        <div class="input-block">
+          <label>Instructions</label>
+          <textarea id="mgrInstructionsInput" placeholder="Instructions for manager..."></textarea>
+        </div>
+      </div>
+      <div class="editor-footer">
+        <button id="finalizeTrackerBtn" class="save-btn">Push to Users</button>
+      </div>
+    </div>
+
+    <!-- TRACKERS BODY -->
+    <div id="managerList" class="trackers-body"></div>
+
+    <!-- SPREADSHEET OVERLAY -->
+    <div id="spreadsheetOverlay" class="modal-overlay" style="display:none;">
+      <div class="modal-card">
+        <h3>Spreadsheet Template</h3>
+        <button id="closeSheetBtn" class="close-x">&times;</button>
+        <div id="spreadsheetPreview" class="preview-area">
+          <p>Spreadsheet preview goes here</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGS VIEW -->
+  <section id="logsView" class="admin-view">
+    <section class="filters-container">
+      <div class="filter-group">
+        <label>Role:</label>
+        <select id="roleFilter">
+          <option value="">All Roles</option>
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Disposition:</label>
+        <select id="dispositionFilter">
+          <option value="">All</option>
+          <option value="Completed">Completed</option>
+          <option value="Pending">Pending</option>
+          <option value="Failed">Failed</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Phone:</label>
+        <input type="text" id="phoneFilter" placeholder="Filter by phone...">
+      </div>
+      <button id="clearFilters">Clear Filters</button>
+    </section>
+
+    <section id="tableWrapper">
+      <table id="logsTable">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Phone</th>
+            <th>Disposition</th>
+            <th>Edit History</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </section>
+
+</main>
+
+<script type="module" src="admin.js"></script>
+<script type="module" src="main.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /* ---------- sw.js ---------- */
-const CACHE_NAME = 'manager-app-v2'; // Increment version to force update
+const CACHE_NAME = 'manager-app-v3'; // Increment version to force update
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -13,14 +13,6 @@ const ASSETS_TO_CACHE = [
     './ui.js',
     './4840719.jpg'
 ];
-
-self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE)));
-});
-
-self.addEventListener('fetch', (e) => {
-  e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
-});
 
 // 1. Install - Caches the files
 self.addEventListener('install', (event) => {
@@ -54,6 +46,8 @@ self.addEventListener('activate', (event) => {
 // 3. Fetch - Network First Strategy with Backend Bypass
 self.addEventListener('fetch', (event) => {
     // BYPASS FOR BACKEND: Don't cache API calls
+    // If it's an API call, don't use event.respondWith at all.
+    // This lets the browser handle the error naturally instead of the SW catching it.
     if (event.request.url.includes(':5000') || event.request.url.includes('/api/')) {
         return; 
     }

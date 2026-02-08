@@ -1,20 +1,25 @@
 /* --- CORE LAYOUT --- */
 :root {
   --sidebar-width: 260px;
-  --bg-dark: #1e1e1e;
-  --bg-sidebar: #2c3e50;
+  --sidebar-collapsed: 70px;
+  --bg-dark: #fcfcfc;
+  --bg-sidebar: #fdfdfd;
   --accent-blue: #007bff;
   --danger-red: #dc3545;
-  --text-main: #ddd;
+  --text-main: #000000;
 }
 
 body {
   font-family: Arial, sans-serif;
-  background: #121212; /* Matching your dark theme intent */
+  background: var(--bg-dark);
   margin: 0;
-  display: flex; /* Critical for Sidebar/Content split */
+  display: flex; 
   min-height: 100vh;
   color: var(--text-main);
+}
+
+body.layout-collapsed {
+  --sidebar-width: var(--sidebar-collapsed);
 }
 
 /* --- SIDEBAR STYLING --- */
@@ -22,49 +27,67 @@ body {
   width: var(--sidebar-width);
   height: 100vh;
   background-color: var(--bg-sidebar);
-  color: white;
+  color: rgb(0, 0, 0);
+  display: flex;
+  flex-direction: column;
   padding: 20px;
   position: fixed;
   left: 0;
   top: 0;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+  transition: width 0.3s ease;
+  overflow: hidden;
   z-index: 1000;
 }
 
-.menu-header h1 {
+.side-menu.collapsed {
+  width: var(--sidebar-collapsed);
+}
+
+/* Sidebar header */
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.menu-title {
   font-size: 1.5rem;
   margin-bottom: 5px;
   color: #fff;
+  transition: opacity 0.3s ease;
 }
 
-.top-nav-links {
-  font-size: 0.8rem;
-  margin-bottom: 20px;
+/* Hamburger button always visible */
+#hamburgerBtn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1100;
 }
 
-.top-nav-links a {
-  color: #bdc3c7;
-  text-decoration: none;
-}
-
+/* Menu items/buttons */
 .menu-items {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  margin-top: 20px;
+  gap: 10px;
+  transition: opacity 0.3s ease, height 0.3s ease;
 }
 
 .menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ecf0f1;
+  color: #000000;
+  border: none;
   padding: 12px 15px;
-  text-align: left;
-  font-weight: 600;
-  cursor: pointer;
   border-radius: 6px;
+  cursor: pointer;
   transition: all 0.2s ease;
+  overflow: hidden;
 }
 
 .menu-btn:hover {
@@ -78,6 +101,24 @@ body {
   color: white;
 }
 
+/* Icon & text inside buttons */
+.menu-btn .icon {
+  font-size: 1.2rem; /* always visible */
+}
+
+.menu-btn .text {
+  transition: opacity 0.3s ease, width 0.3s ease;
+}
+
+.side-menu.collapsed .menu-btn .text {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+/* Divider and logout button */
 .nav-divider {
   border: 0;
   border-top: 1px solid rgba(255,255,255,0.1);
@@ -85,27 +126,82 @@ body {
 }
 
 .btn-logout {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 20px;
-    transition: background 0.3s;
+  background-color: var(--danger-red);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+  transition: background 0.3s;
 }
 
 .btn-logout:hover {
-    background-color: #c0392b;
+  background-color: #c0392b;
+}
+
+/* --- TOOLBAR --- */
+.toolbar {
+  position: sticky;
+  height: 70px;
+  display: f;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 100px;
+  background-color: #fff;
+  box-sizing: border-box;
+  border-bottom: 1px solid #ddd;
+  top: 0;
+  width: 100%;
+  left: var(--sidebar-width);
+  right: 0;
+  z-index: 100;
+  transition: left 0.3s ease;
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toolbar input#search {
+  height: 36px;
+  width: 260px;
+
+  padding: 0 12px;
+  border: 1px solid #2f2f2f;
+  border-radius: 6px;
+
+  color: #000000;
+  font-size: 14px;
+
+  outline: none;
+}
+
+.toolbar input#search::placeholder {
+  color: #777;
 }
 
 /* --- MAIN CONTENT AREA --- */
-.main-content {
-  flex: 1;
-  margin-left: var(--sidebar-width); /* Prevents content from going under sidebar */
-  padding: 40px;
-  background: #121212;
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.3s ease, width 0.3s ease;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  background-color: #f6f6f6;
+}
+
+.layout-collapsed .main-wrapper {
+  margin-left: 0;
+  width: 100%;
 }
 
 .content-header {
@@ -115,7 +211,16 @@ body {
   margin-bottom: 30px;
 }
 
-/* --- FILTER & AUDIT SECTION (Your Existing Styles) --- */
+.content-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* --- FILTER & AUDIT SECTION --- */
 .filters-container {
   display: flex;
   flex-wrap: wrap;
@@ -190,6 +295,14 @@ body {
   background-color: rgba(255, 255, 255, 0.05);
 }
 
+.container {
+  display: grid;
+  /* 'auto' follows the sidebar width, '1fr' takes the rest */
+  grid-template-columns: auto 1fr; 
+  height: 100vh;
+}
+
+
 /* --- RESPONSIVE --- */
 @media (max-width: 992px) {
   .side-menu {
@@ -199,7 +312,37 @@ body {
   .side-menu h1, .side-menu span, .top-nav-links, .manager-section {
     display: none;
   }
-  .main-content {
+  .main-wrapper, .main-content, .toolbar {
     margin-left: 70px;
+    width: calc(100% - 70px);
   }
+}
+
+.main-content {
+ padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden; 
+  display: block; 
+} 
+
+.content-header button, 
+button[onclick*="Tracker"] { /* or use a specific class if you add one */
+    background-color: var(--accent-blue, #007bff);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    
+    /* This creates the "pop" effect */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f7f6; /* A slight off-white for better contrast */
 }

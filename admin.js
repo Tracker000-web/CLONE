@@ -9,8 +9,6 @@ import { api } from "./api.js";
 // --- SECURITY ---
 requireAdmin();
 const currentUser = getUser();
-
-// Redirect non-admins just in case
 if (!currentUser || currentUser.role !== 'admin') {
     window.location.href = 'index.html';
 }
@@ -19,7 +17,7 @@ if (!currentUser || currentUser.role !== 'admin') {
 let logs = [];
 let managers = [];
 
-// --- DOM ELEMENTS (will be queried after DOM loads) ---
+// --- DOM ELEMENTS ---
 let menuButtons, logsView, trackersView, viewTitle;
 let expandAddBtn, trackerExpansionPanel, mgrNameInput, mgrInstructionsInput, finalizeTrackerBtn, trackersBody;
 let sheetOverlay, openSheetBtn, closeSheetBtn;
@@ -28,7 +26,9 @@ let managerListContainer;
 // --- MAIN INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', async () => {
     // --- QUERY DOM ELEMENTS ---
-    menuButtons = document.querySelectorAll('.menu-btn');
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.querySelector(".side-menu");
+
     logsView = document.getElementById('logsView');
     trackersView = document.getElementById('trackersView');
     viewTitle = document.getElementById('viewTitle');
@@ -46,15 +46,34 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     managerListContainer = document.getElementById('managerList');
 
+    menuButtons = document.querySelectorAll('.menu-btn');
+
+    // --- SIDEBAR TOGGLE ---
+    menuToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+        updateToolbarState();
+    });
+
+    function updateToolbarState() {
+        if (sidebar.classList.contains("collapsed")) {
+            document.body.classList.remove("sidebar-expanded");
+            document.body.classList.add("sidebar-collapsed");
+        } else {
+            document.body.classList.remove("sidebar-collapsed");
+            document.body.classList.add("sidebar-expanded");
+        }
+    }
+
+    updateToolbarState(); // initial state
+
     // --- MENU SWITCHING ---
     setupMenuSwitching();
 
-    // --- PANEL TOGGLE ---
+    // --- TRACKER PANEL TOGGLE ---
     expandAddBtn?.addEventListener('click', () => {
-        trackerExpansionPanel.classList.toggle('active');
-        expandAddBtn.innerText = trackerExpansionPanel.classList.contains('active')
-            ? 'Close Editor'
-            : '+ Add New Manager Tracker';
+        const isActive = trackerExpansionPanel.classList.toggle('active');
+        trackerExpansionPanel.style.display = isActive ? 'block' : 'none';
+        expandAddBtn.innerText = isActive ? 'Close Editor' : '+ Add New Manager Tracker';
     });
 
     // --- SPREADSHEET MODAL ---
@@ -78,11 +97,9 @@ function setupMenuSwitching() {
         btn.addEventListener('click', () => {
             const target = btn.dataset.target;
 
-            // Remove 'active' from all buttons
             menuButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            // Show/hide views
             if (target === 'trackers') {
                 trackersView.style.display = 'block';
                 logsView.style.display = 'none';
@@ -92,8 +109,8 @@ function setupMenuSwitching() {
                 trackersView.style.display = 'none';
                 viewTitle.textContent = 'System Audit Logs';
             } else {
-                trackersView.style.display = 'none';
                 logsView.style.display = 'none';
+                trackersView.style.display = 'none';
             }
         });
     });
@@ -103,8 +120,7 @@ function setupMenuSwitching() {
 async function fetchLogs() {
     try {
         logs = await api.authenticatedFetch('/api/logs');
-    } catch (err) {
-        console.warn("Failed to fetch logs, using fallback", err);
+    } catch {
         logs = [
             { user: "John Doe", role: "user", phone: "09123456789", disposition: "Completed", history: "Submitted form", timestamp: "2026-01-27 10:00" },
             { user: "Jane Admin", role: "admin", phone: "09234567890", disposition: "Pending", history: "Edited manager", timestamp: "2026-01-27 11:00" }
@@ -142,7 +158,7 @@ function setupFilters() {
     const filterLogsFunc = () => {
         const role = roleFilter?.value.toLowerCase() || "";
         const disposition = dispositionFilter?.value.toLowerCase() || "";
-        const phone = phoneFilter?.value.toLowerCase() || "";
+        const phone = phoneFilter?.value || "";
 
         const filtered = logs.filter(log =>
             (role === "" || log.role.toLowerCase() === role) &&
@@ -157,9 +173,9 @@ function setupFilters() {
     phoneFilter?.addEventListener("input", filterLogsFunc);
 
     clearBtn?.addEventListener("click", () => {
-        if (roleFilter) roleFilter.value = "";
-        if (dispositionFilter) dispositionFilter.value = "";
-        if (phoneFilter) phoneFilter.value = "";
+        roleFilter.value = "";
+        dispositionFilter.value = "";
+        phoneFilter.value = "";
         renderLogs(logs);
     });
 }
@@ -182,43 +198,49 @@ async function renderManagersSidebar() {
             div.dataset.id = mgr.id;
 
             div.addEventListener('click', () => {
+                // Open editor panel
+                trackerExpansionPanel.style.display = 'block';
+                trackerExpansionPanel.classList.add('active');
+                expandAddBtn.innerText = 'Close Editor';
                 mgrNameInput.value = mgr.name;
                 loadManagerTrackers(mgr.id);
-                trackerExpansionPanel.classList.add('active');
             });
 
             managerListContainer.appendChild(div);
         });
-    } catch (err) {
-        console.error(err);
+    } catch {
         managerListContainer.innerHTML = '<p class="empty-msg">Failed to load managers.</p>';
     }
 }
 
-// Load trackers for selected manager
 async function loadManagerTrackers(managerId) {
     try {
         const trackers = await api.authenticatedFetch(`/api/trackers?manager_id=${managerId}`);
-        trackerExpansionPanel.innerHTML = '';
 
+        // Only show the list of trackers inside a sub-container, not wipe the whole panel
+        const panelContent = document.createElement('div');
         if (!trackers.length) {
-            trackerExpansionPanel.innerHTML = '<p>No previous trackers</p>';
-            return;
+            panelContent.innerHTML = '<p>No previous trackers</p>';
+        } else {
+            trackers.forEach(tr => {
+                const div = document.createElement('div');
+                div.className = 'tracker-item';
+                div.textContent = `${tr.date || tr.createdAt} | ${tr.instructions}`;
+                panelContent.appendChild(div);
+            });
         }
 
-        trackers.forEach(tr => {
-            const div = document.createElement('div');
-            div.className = 'tracker-item';
-            div.textContent = `${tr.date || tr.createdAt} | ${tr.instructions}`;
-            trackerExpansionPanel.appendChild(div);
-        });
-    } catch (err) {
-        console.error(err);
-        trackerExpansionPanel.innerHTML = '<p>Error loading trackers</p>';
+        // Clear previous content except input blocks and footer
+        const inputBlocks = trackerExpansionPanel.querySelectorAll('.editor-row, .editor-footer');
+        trackerExpansionPanel.innerHTML = '';
+        inputBlocks.forEach(el => trackerExpansionPanel.appendChild(el));
+        trackerExpansionPanel.appendChild(panelContent);
+    } catch {
+        trackerExpansionPanel.innerHTML += '<p>Error loading trackers</p>';
     }
 }
 
-// -------------------- FINALIZE MANAGER --------------------
+// -------------------- FINALIZE TRACKER --------------------
 async function finalizeTracker() {
     const name = mgrNameInput.value.trim();
     const instructions = mgrInstructionsInput.value.trim();
@@ -229,7 +251,7 @@ async function finalizeTracker() {
         name,
         instructions,
         createdAt: new Date().toISOString(),
-        rows: [["", "", "Pending", ""]] // optional initial row
+        rows: [["", "", "Pending", ""]]
     };
 
     try {
@@ -241,15 +263,14 @@ async function finalizeTracker() {
 
         renderManagerInBody(response);
 
-        // Reset inputs
         mgrNameInput.value = '';
         mgrInstructionsInput.value = '';
+        trackerExpansionPanel.style.display = 'none';
         trackerExpansionPanel.classList.remove('active');
         expandAddBtn.innerText = '+ Add New Manager Tracker';
 
         alert("Manager added successfully!");
-    } catch (err) {
-        console.error("Failed to add manager:", err);
+    } catch {
         alert("Error adding manager");
     }
 }

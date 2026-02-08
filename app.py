@@ -115,7 +115,7 @@ def api_me():
 # --------------------------------------------------
 # ADD USER (ADMIN ONLY)
 # --------------------------------------------------
-@app.route("/add-user", methods=["POST"])
+@app.route("/api/add-user", methods=["POST"])
 @token_required
 def add_user():
     current = request.current_user

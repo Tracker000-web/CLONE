@@ -6,7 +6,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #7f8583; 
+    background-color: #ffffff; 
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -570,7 +570,6 @@ input:focus {
 }
 
 
-
 /* Table Styling */
 .content { padding: 80px 40px; }
 table {
@@ -860,4 +859,17 @@ body.theme-reader { background-color: #fdf6e3; color: #586e75; font-family: seri
 
 .tracker-manager-btn:hover {
   background: var(--card-hover);
+}
+
+
+body.sidebar-expanded .toolbar {
+  justify-content: flex-start;
+  margin-left: 250px; /* match sidebar width */
+  width: calc(100% - 250px);
+}
+
+body.sidebar-collapsed .toolbar {
+  justify-content: center;
+  margin-left: 0;
+  width: 100%;
 }
