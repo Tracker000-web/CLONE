@@ -145,7 +145,7 @@ body.layout-collapsed {
 .toolbar {
   position: sticky;
   height: 70px;
-  display: f;
+  display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px 100px;
@@ -311,16 +311,13 @@ body.layout-collapsed {
   }
   .side-menu h1, .side-menu span, .top-nav-links, .manager-section {
     display: none;
-  }
-  .main-wrapper, .main-content, .toolbar {
-    margin-left: 70px;
-    width: calc(100% - 70px);
-  }
+}
 }
 
 .main-content {
  padding: 20px;
-  width: 100%;
+  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width);
   box-sizing: border-box;
   overflow-x: hidden; 
   display: block; 
